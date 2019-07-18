@@ -2,41 +2,10 @@ var mongoose = require('mongoose')
 var bcrypt = require('bcrypt-nodejs');
 
 var AccountModelSchema = new mongoose.Schema({
-    avatar: {
-        type: String
-    },
-    name: {
-        first: {
-            type: String
-        },
-        middle: {
-            type: String
-        },
-        last: {
-            type: String
-        },
-        nickname: {
-            type: String
-        }
-    },
-    contacts: {
-        email: {
-            type: String,
-            // required: [true, 'Email is a required field'],
-            // unique: true
-        },
-        phone: {
-            type: String
-        }
-    },
-    address: {
-        type: String
-    },
-    groups: [],
-    username: {
+    email: {
         type: String,
-        // unique: true,
-        // required: [true, 'Username is a required field'],
+        // required: [true, 'Email is a required field'],
+        // unique: true
     },
     password: {
         type: String,
@@ -60,11 +29,8 @@ AccountModelSchema.pre('save', async function (callback) {
     account.date_created = new Date();
     account.date_modified = new Date();
 
-    // Break out if the password hasn't changed
-    if (!account.isModified("password")) return callback();
-
-    // Password changed so we need to hash it
-    const hash = await bcrypt.hashSync(account.password, 10);
+    const salt = bcrypt.genSaltSync(5);
+    const hash = bcrypt.hashSync(account.password, salt)
     account.password = hash;
     callback();
 });
