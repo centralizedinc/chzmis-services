@@ -6,7 +6,7 @@ var SettingsDao = require('../dao/SettingsDao');
 var ApplicationSettings = require('./ApplicationSettings');
 
 function connect() {
-    mongoose.connect(process.env.MONGODB_URI || "mongodb://heroku_dwdl1xnt:9j2bt4hk1qmch2jtu4q2ctc4pc@ds263816.mlab.com:63816/heroku_dwdl1xnt", {
+    mongoose.connect(process.env.MONGODB_URI || require('./constant_helper').mongodb_uri, {
         promiseLibrary: require('bluebird'),
         useNewUrlParser: true
     })

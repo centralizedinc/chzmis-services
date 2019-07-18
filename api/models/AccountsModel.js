@@ -45,6 +45,7 @@ AccountModelSchema.pre('findOneAndUpdate', function (callback) {
 AccountModelSchema.methods.isValidPassword = async function (password) {
     //Hashes the password sent by the user for login and checks if the hashed password stored in the 
     //database matches the one sent. Returns true if it does else false.
+    console.log('password2 :', password);
     return await bcrypt.compareSync(password, this.password);
 }
 
