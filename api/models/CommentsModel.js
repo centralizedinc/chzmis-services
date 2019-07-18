@@ -1,27 +1,28 @@
+
 var mongoose = require('mongoose')
-var GroupModelSchema = new mongoose.Schema({
-    name: {
+var CommentsModelSchema = new mongoose.Schema({
+    author: {
         type: String
     },
-    status: {
-        type: Number,
-        default: 1
-        /**
-         * 0 - Inactive
-         * 1 - Active
-         */
+    avatar: {
+        type: String
     },
-    favorites: [],
-    members: [],
-    created_by: {
+    message: {
+        type: String
+    },
+    uploads: [],
+    likes: [],
+    dislikes: [],
+    datetime: {
+        type: Date,
+        default: new Date()
+    },
+    group: {
         type: String
     },
     date_created: {
         type: Date,
         default: new Date()
-    },
-    modified_by: {
-        type: String
     },
     date_modified: {
         type: Date,
@@ -29,17 +30,17 @@ var GroupModelSchema = new mongoose.Schema({
     }
 })
 
-GroupModelSchema.pre('save', function (callback) {
+CommentsModelSchema.pre('save', function (callback) {
     this.date_created = new Date();
     this.date_modified = new Date();
     callback();
 });
 
-GroupModelSchema.pre('findOneAndUpdate', function (callback) {
+CommentsModelSchema.pre('findOneAndUpdate', function (callback) {
     this.options.new = true;
     this.options.runValidators = true;
     this._update.date_modified = new Date();
     callback();
 });
 
-module.exports = mongoose.model('groups', GroupModelSchema)
+module.exports = mongoose.model('accounts', CommentsModelSchema)
