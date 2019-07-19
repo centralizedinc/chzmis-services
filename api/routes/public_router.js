@@ -11,18 +11,6 @@ const response_helper = new ResponseHelper('AUTH')
 
 const ApplicationSettings = require('../utils/ApplicationSettings')
 
-router
-    .route('/signup')
-    .post(passport.authenticate('signup', { session: false }), (req, res) => {
-        var data = req.body;
-        data.account_id = req.user._id;
-        UserDao.create(data)
-            .then((result) => {
-                response_helper.sendPostResponse(req, res, result, null, 0)
-            }).catch((err) => {
-                response_helper.sendPostResponse(req, res, null, err, 0)
-            });
-    })
 
 router.route('/login')
     .post(passport.authenticate('login', { session: false }), (req, res) => {
@@ -36,30 +24,37 @@ router.route('/login')
             });
     })
 
-// router
-//     .route('/login')
-//     .post((req, res) => {
-//         console.log('req.body :', req.body);
-//         passport.authenticate('local',  (err, user, info) => {
-//             console.log('after auth');
-//             try {
-//                 if (err || !user) {
-//                     const error = new Error('An Error occured')
-//                     response_helper.sendPostResponse(req, res, null, error, 0)
-//                 } else {
-//                     req.login(user, { session: false }, (error) => {
-//                         if (error) {
-//                             response_helper.sendPostResponse(req, res, null, error, 0)
-//                         } {
-//                             const token = jwt.sign({ id: user._id, email: user.email }, ApplicationSettings.getValue("JWT_SECRET_TOKEN"));
-//                             response_helper.sendPostResponse(req, res, { user, token }, error, 0)
-//                         }
-//                     });
-//                 }
-//             } catch (error) {
-//                 response_helper.sendPostResponse(req, res, null, error, 0)
-//             }
-//         })(req, res, next);
-//     })
+
+/***** SIGN UP USING EMAIL ONLY *****/
+router
+    .route('/signup')
+    .post(passport.authenticate('signup', { session: false }), (req, res) => {
+        var data = req.body;
+        data.account_id = req.user._id;
+        UserDao.create(data)
+            .then((result) => {
+                response_helper.sendPostResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                response_helper.sendPostResponse(req, res, null, err, 0)
+            });
+    })
+
+
+/***** SIGN UP USING GOOGLE ACCOUNT *****/
+router.route('/auth/google')
+    .get(passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }), (req, res) => {
+        // console.log('req :', req);
+        console.log('auth/google');
+        res.sendStatus(200)
+    });
+
+router.route('/auth/google/callback')
+    .get(passport.authenticate('google', { session: false }), (req, res) => {
+        // res.redirect('/');
+        // console.log('req :', req);
+        console.log('auth/google/callback');
+        // res.sendStatus(200)
+        res.redirect('http://localhost:8080/#/registration?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
+    });
 
 module.exports = router;

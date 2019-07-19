@@ -7,9 +7,19 @@ var AccountModelSchema = new mongoose.Schema({
         // required: [true, 'Email is a required field'],
         // unique: true
     },
+    method: {
+        type: String,
+        enum: ['local', 'google', 'facebook']
+    },
     password: {
         type: String,
         // required: [true, 'Password is a required field']
+    },
+    google_id: {
+        type: String
+    },
+    facebook_id: {
+        type: String
     },
     session_token: {
         type: String
@@ -43,9 +53,6 @@ AccountModelSchema.pre('findOneAndUpdate', function (callback) {
 });
 
 AccountModelSchema.methods.isValidPassword = async function (password) {
-    //Hashes the password sent by the user for login and checks if the hashed password stored in the 
-    //database matches the one sent. Returns true if it does else false.
-    console.log('password2 :', password);
     return await bcrypt.compareSync(password, this.password);
 }
 

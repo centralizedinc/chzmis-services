@@ -32,7 +32,7 @@ class AccountDao {
      * @returns {Promise}
      * @param {String} email 
      */
-    static findByEmail(email){
+    static findByEmail(email) {
         return model.findOne({ email }).exec()
     }
 

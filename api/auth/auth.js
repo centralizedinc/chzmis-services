@@ -35,12 +35,9 @@ passport.use('login', new LocalStrategy({
     console.log('email :', email);
     dao.findByEmail(email)
         .then((account) => {
-            console.log('account :', account);
             if (!account) return done(null, false, { message: constant_helper.invalid_email_auth })
-            console.log('password :', password);
             // Validate Password
             const validate = account.isValidPassword(password);
-            console.log('validate :', validate);
             if (!validate) done(null, false, { message: constant_helper.invalid_password_auth });
             else {
                 account.password = undefined
