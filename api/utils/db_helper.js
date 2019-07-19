@@ -12,12 +12,16 @@ function connect() {
     })
         .then(() => {
             console.log('connection successful');
+
+            /****** Setup Application Variables ******/
             return SettingsDao.getSettings()
         })
         .then((params) => {
             ApplicationSettings.setApplicationVariables(params)
             console.log('Initialized Application Settings: ' + JSON.stringify(ApplicationSettings.getApplicationVariables()));
 
+            /****** Setup Authentication ******/
+            require('../auth/auth')
         }).catch((err) => console.error(err));
 }
 

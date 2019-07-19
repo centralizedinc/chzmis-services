@@ -1,5 +1,6 @@
 const app = (require('express'))()
 const bodyParser = require('body-parser')
+const passport = require('passport');
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -12,12 +13,9 @@ app.options('*', cors())
 /****** Connect Database ******/
 require('./api/utils/db_helper').connect();
 
-/****** Setup Authentication ******/
-require('./api/auth/auth')
-
 app.use('/', require('./api/routes/public_router'));
-app.use('/groups', require('./api/routes/group_router'));
-app.use('/accounts', require('./api/routes/account_router'));
+app.use('/groups', passport.authenticate('jwt', { session : false }), require('./api/routes/group_router'));
+app.use('/accounts', passport.authenticate('jwt', { session : false }), require('./api/routes/account_router'));
 
 
 //Handle errors

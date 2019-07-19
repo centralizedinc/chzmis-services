@@ -5,9 +5,29 @@ const dao = require('../dao/AccountDao');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
-const constant_helper = require('../utils/constant_helper')
+const constant_helper = require('../utils/constant_helper');
+const ApplicationSettings = require('../utils/ApplicationSettings');
+
+// VALIDATING TOKEN
+passport.use(new JWTstrategy({
+    secretOrKey: ApplicationSettings.getValue("JWT_SECRET_TOKEN"),
+    jwtFromRequest: ExtractJWT.fromUrlQueryParameter('access_token')
+}, async (token, done) => {
+    try {
+        return done(null, token);
+    } catch (error) {
+        console.log(error);
+        done({
+            success: false,
+            code: "UNAUTHORIZED",
+            message: "Invalid Token",
+            error
+        });
+    }
+}));
 
 
+// LOGIN
 passport.use('login', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
@@ -29,6 +49,8 @@ passport.use('login', new LocalStrategy({
         }).catch((error) => done(error));
 }))
 
+
+// SIGNUP
 passport.use('signup', new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
@@ -37,6 +59,3 @@ passport.use('signup', new LocalStrategy({
         .then((account) => done(null, account))
         .catch((err) => done(err));
 }))
-
-
-// passport.use()
