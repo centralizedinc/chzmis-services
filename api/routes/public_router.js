@@ -42,19 +42,11 @@ router
 
 /***** SIGN UP USING GOOGLE ACCOUNT *****/
 router.route('/auth/google')
-    .get(passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }), (req, res) => {
-        // console.log('req :', req);
-        console.log('auth/google');
-        res.sendStatus(200)
-    });
+    .get(passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
 router.route('/auth/google/callback')
     .get(passport.authenticate('google', { session: false }), (req, res) => {
-        // res.redirect('/');
-        // console.log('req :', req);
-        console.log('auth/google/callback');
-        // res.sendStatus(200)
-        res.redirect('http://localhost:8080/#/registration?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
+        res.redirect('http://localhost:8080/#/googleSignUp?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
     });
 
 module.exports = router;
