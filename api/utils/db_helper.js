@@ -23,6 +23,7 @@ function connect() {
             /****** Setup Authentication ******/
             require('../auth/auth')
             require('../auth/google')
+            require('../auth/facebook')
         }).catch((err) => console.error(err));
 }
 

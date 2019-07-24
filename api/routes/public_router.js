@@ -49,4 +49,21 @@ router.route('/auth/google/callback')
         res.redirect('http://localhost:8080/#/googleSignUp?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
     });
 
+/***** SIGN UP USING FACEBOOK ACCOUNT *****/
+router.route('/auth/facebook')
+  .get(passport.authenticate('facebook'), (req, res)=>{
+      console.log('/auth/facebook')
+  });
+//   .get((req, res)=>{
+//       res.json("HELLO")
+//   })
+
+  router.route('/auth/facebook/callback')
+  .get(passport.authenticate('facebook', { session: false }),
+  (req, res) => {
+    // Successful authentication, redirect home.
+    console.log('/auth/facebook/callback')
+  res.redirect('http://localhost:8080/#/facebookSignUp?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
+  });
+
 module.exports = router;
