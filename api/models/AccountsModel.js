@@ -2,6 +2,9 @@ var mongoose = require('mongoose')
 var bcrypt = require('bcrypt-nodejs');
 
 var AccountModelSchema = new mongoose.Schema({
+    id: {
+        type: String
+    },
     email: {
         type: String,
         // required: [true, 'Email is a required field'],
@@ -14,6 +17,12 @@ var AccountModelSchema = new mongoose.Schema({
     password: {
         type: String,
         // required: [true, 'Password is a required field']
+    },
+    favorites: {
+        type: String
+    },
+    nicknames: {
+        type: String
     },
     google_id: {
         type: String

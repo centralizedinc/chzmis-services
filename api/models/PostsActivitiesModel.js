@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
-var CommentsActivitiesModelSchema = new mongoose.Schema({
-    comment_id: {
+var PostsActivitiesModelSchema = new mongoose.Schema({
+    post_id: {
         type: String
     },
     module: {
@@ -23,16 +23,16 @@ var CommentsActivitiesModelSchema = new mongoose.Schema({
     }
 })
 
-CommentsActivitiesModelSchema.pre('save', function (callback) {
+PostsActivitiesModelSchema.pre('save', function (callback) {
     this.date_created = new Date();
     callback();
 });
 
-// CommentsActivitiesModelSchema.pre('findOneAndUpdate', function (callback) {
+// PostsActivitiesModelSchema.pre('findOneAndUpdate', function (callback) {
 //     this.options.new = true;
 //     this.options.runValidators = true;
 //     this._update.date_modified = new Date();
 //     callback();
 // });
 
-module.exports = mongoose.model('comments_activities', CommentsActivitiesModelSchema)
+module.exports = mongoose.model('posts_activities', PostsActivitiesModelSchema)

@@ -1,36 +1,24 @@
 var mongoose = require('mongoose')
-
-var UserModelSchema = new mongoose.Schema({
-    account_id: {
+var PostsModelSchema = new mongoose.Schema({
+    id: {
         type: String
     },
-    avatar: {
+    author: {
         type: String
     },
-    name: {
-        first: {
-            type: String
-        },
-        middle: {
-            type: String
-        },
-        last: {
-            type: String
-        },
-        nickname: {
-            type: String
-        }
-    },
-    address: {
+    title: {
         type: String
     },
-    phone: {
+    message: {
         type: String
     },
-    email: {
+    uploads: [],
+    likes: [],
+    dislikes: [],
+    comments: [],
+    parent_id: {
         type: String
     },
-    groups: [],
     date_created: {
         type: Date,
         default: new Date()
@@ -41,17 +29,17 @@ var UserModelSchema = new mongoose.Schema({
     }
 })
 
-UserModelSchema.pre('save', function (callback) {
+PostsModelSchema.pre('save', function (callback) {
     this.date_created = new Date();
     this.date_modified = new Date();
     callback();
 });
 
-UserModelSchema.pre('findOneAndUpdate', function (callback) {
+PostsModelSchema.pre('findOneAndUpdate', function (callback) {
     this.options.new = true;
     this.options.runValidators = true;
     this._update.date_modified = new Date();
     callback();
 });
 
-module.exports = mongoose.model('users', UserModelSchema)
+module.exports = mongoose.model('posts', PostsModelSchema)

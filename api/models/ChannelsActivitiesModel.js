@@ -1,15 +1,18 @@
 var mongoose = require('mongoose')
-var CommentsActivitiesModelSchema = new mongoose.Schema({
-    comment_id: {
+var ChannelsActivitiesModelSchema = new mongoose.Schema({
+    channel_id: {
+        type: String
+    },
+    user: {
         type: String
     },
     module: {
         type: Number
         /**
-         * 0 - POST
-         * 1 - COMMENT
-         * 2 - LIKE
-         * 3 - UPDATE
+         * 0 - CREATE
+         * 1 - UPDATE
+         * 2 - NEW MEMBER
+         * 3 - FAVORITE
          * 4 - DELETE
          */
     },
@@ -23,16 +26,16 @@ var CommentsActivitiesModelSchema = new mongoose.Schema({
     }
 })
 
-CommentsActivitiesModelSchema.pre('save', function (callback) {
+ChannelsActivitiesModelSchema.pre('save', function (callback) {
     this.date_created = new Date();
     callback();
 });
 
-// CommentsActivitiesModelSchema.pre('findOneAndUpdate', function (callback) {
+// ChannelsActivitiesModelSchema.pre('findOneAndUpdate', function (callback) {
 //     this.options.new = true;
 //     this.options.runValidators = true;
 //     this._update.date_modified = new Date();
 //     callback();
 // });
 
-module.exports = mongoose.model('comments_activities', CommentsActivitiesModelSchema)
+module.exports = mongoose.model('channels_activities', ChannelsActivitiesModelSchema)

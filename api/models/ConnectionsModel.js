@@ -1,23 +1,33 @@
 var mongoose = require('mongoose')
-var CommentsModelSchema = new mongoose.Schema({
+var ConnectionsModelSchema = new mongoose.Schema({
     id: {
         type: String
     },
-    author: {
+    name: {
         type: String
     },
-    avatar: {
+    status: {
+        type: Number,
+        default: 1
+        /**
+         * 0 - Inactive
+         * 1 - Active
+         */
+    },
+    favorites: [],
+    members: [], // role: account_id
+    topics: {
         type: String
     },
-    message: {
+    created_by: {
         type: String
     },
-    uploads: [],
-    likes: [],
-    dislikes: [],
     date_created: {
         type: Date,
         default: new Date()
+    },
+    modified_by: {
+        type: String
     },
     date_modified: {
         type: Date,
@@ -25,17 +35,17 @@ var CommentsModelSchema = new mongoose.Schema({
     }
 })
 
-CommentsModelSchema.pre('save', function (callback) {
+ConnectionsModelSchema.pre('save', function (callback) {
     this.date_created = new Date();
     this.date_modified = new Date();
     callback();
 });
 
-CommentsModelSchema.pre('findOneAndUpdate', function (callback) {
+ConnectionsModelSchema.pre('findOneAndUpdate', function (callback) {
     this.options.new = true;
     this.options.runValidators = true;
     this._update.date_modified = new Date();
     callback();
 });
 
-module.exports = mongoose.model('accounts', CommentsModelSchema)
+module.exports = mongoose.model('connections', ConnectionsModelSchema)

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 var AccountsActivitiesModelSchema = new mongoose.Schema({
-    user: {
+    account_id: {
         type: String
     },
     module: {
