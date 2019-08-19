@@ -22,6 +22,14 @@ class UserDao {
 
     /**
      * @returns {Promise}
+     * @param {String} account_id 
+     */
+    static findOneByAccountID(account_id) {
+        return model.findById(account_id).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
      * @param {Object} conditions 
      */
     static findOne(conditions) {
@@ -41,6 +49,7 @@ class UserDao {
      * @param {Object} details 
      */
     static create(details) {
+        console.log("details doa: " + JSON.stringify(details))
         return (new model(details)).save()
     }
 

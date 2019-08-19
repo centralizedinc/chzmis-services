@@ -4,6 +4,9 @@ var router = require("express").Router();
 
 // DAO
 var GroupDao = require('../dao/GroupDao');
+var ChannelDao = require('../dao/ChannelsDao');
+var ConnectionDao = require('../dao/ConnectionsDao');
+
 
 // Utils
 var ResponseHelper = require("../utils/response_helper");
@@ -11,6 +14,132 @@ var ResponseHelper = require("../utils/response_helper");
 var response_helper = new ResponseHelper('GROUP')
 //Jwt
 var jwt = require('jsonwebtoken')
+
+/******* CHANNELS *******/
+router
+    .route('/')
+    // Get All channels of user
+    .get((req, res) => {
+        var user_session = null;
+        if (req.headers && req.headers.access_token) {
+            var token = req.headers.access_token;
+            user_session = jwt.decode(token);
+        }
+        if (user_session && user_session.id) {
+            ChannelDao.findOneInMember(user_session.id)
+                .then((result) => {
+                    response_helper.sendGetResponse(req, res, result, null, 0)
+                }).catch((err) => {
+                    response_helper.sendGetResponse(req, res, null, err, 0)
+                });
+        } else {
+            response_helper.sendPostResponse(
+                req,
+                res,
+                null, {
+                    local_errors: [{
+                        message: "Invalid Token."
+                    }]
+                },
+                0
+            );
+        }
+    })
+
+    // Add new Channel
+    .post((req, res) => {
+        var user_session = null;
+        if (req.headers && req.headers.access_token) {
+            var token = req.headers.access_token;
+            user_session = jwt.decode(token);
+        }
+        if (user_session && user_session.id) {
+            var channel = req.body;
+            channel.created_by = user_session.id
+            channel.members.push(user_session.id)
+            channel.status = 1; // set as active
+            ChannelDao.create(group)
+                .then((result) => {
+                    response_helper.sendPostResponse(req, res, result, null, 0)
+                }).catch((err) => {
+                    response_helper.sendPostResponse(req, res, null, err, 0)
+                });
+        } else {
+            response_helper.sendPostResponse(
+                req,
+                res,
+                null, {
+                    local_errors: [{
+                        message: "Invalid Token."
+                    }]
+                },
+                0
+            );
+        }
+    });
+
+/******* CONNECTIONS *******/
+router
+    .route('/')
+    // Get All connections of user
+    .get((req, res) => {
+        var user_session = null;
+        if (req.headers && req.headers.access_token) {
+            var token = req.headers.access_token;
+            user_session = jwt.decode(token);
+        }
+        if (user_session && user_session.id) {
+            ConnectionDao.findOneInMember(user_session.id)
+                .then((result) => {
+                    response_helper.sendGetResponse(req, res, result, null, 0)
+                }).catch((err) => {
+                    response_helper.sendGetResponse(req, res, null, err, 0)
+                });
+        } else {
+            response_helper.sendPostResponse(
+                req,
+                res,
+                null, {
+                    local_errors: [{
+                        message: "Invalid Token."
+                    }]
+                },
+                0
+            );
+        }
+    })
+
+    // Add new Connections
+    .post((req, res) => {
+        var user_session = null;
+        if (req.headers && req.headers.access_token) {
+            var token = req.headers.access_token;
+            user_session = jwt.decode(token);
+        }
+        if (user_session && user_session.id) {
+            var connection = req.body;
+            connection.created_by = user_session.id
+            connection.members.push(user_session.id)
+            connection.status = 1; // set as active
+            connection.create(group)
+                .then((result) => {
+                    response_helper.sendPostResponse(req, res, result, null, 0)
+                }).catch((err) => {
+                    response_helper.sendPostResponse(req, res, null, err, 0)
+                });
+        } else {
+            response_helper.sendPostResponse(
+                req,
+                res,
+                null, {
+                    local_errors: [{
+                        message: "Invalid Token."
+                    }]
+                },
+                0
+            );
+        }
+    });
 
 /******* GROUPS *******/
 
@@ -75,6 +204,8 @@ router
         }
     });
 
+
+
 router.route('/delete')
     // Delete Group
     .post((req, res) => {
@@ -85,9 +216,9 @@ router.route('/delete')
         }
         if (user_session && user_session.id) {
             GroupDao.findOneByIdAndUpdate(req.body.group_id, {
-                modified_by: user_session.id,
-                status: 0
-            })
+                    modified_by: user_session.id,
+                    status: 0
+                })
                 .then((result) => {
                     response_helper.sendPostResponse(req, res, result, null, 0)
                 }).catch((err) => {
@@ -165,11 +296,11 @@ router
         }
         if (user_session && user_session.id) {
             GroupDao.findOneByIdAndUpdate(req.body.group_id, {
-                modified_by: user_session.id,
-                favorites: {
-                    $push: user_session.id
-                }
-            })
+                    modified_by: user_session.id,
+                    favorites: {
+                        $push: user_session.id
+                    }
+                })
                 .then((result) => {
                     response_helper.sendGetResponse(req, res, result, null, 2)
                 })
@@ -201,11 +332,11 @@ router
         }
         if (user_session && user_session.id) {
             GroupDao.findOneByIdAndUpdate(req.body.group_id, {
-                modified_by: user_session.id,
-                $pullAll: {
-                    favorites: [user_session.id]
-                }
-            })
+                    modified_by: user_session.id,
+                    $pullAll: {
+                        favorites: [user_session.id]
+                    }
+                })
                 .then((result) => {
                     response_helper.sendGetResponse(req, res, result, null, 2)
                 })
@@ -226,7 +357,7 @@ router
         }
     })
 
-    
+
 /****** MEMBERS ******/
 
 router
@@ -240,11 +371,11 @@ router
         }
         if (user_session && user_session.id) {
             GroupDao.findOneByIdAndUpdate(req.body.group_id, {
-                modified_by: user_session.id,
-                members: {
-                    $push: req.body.user_id
-                }
-            })
+                    modified_by: user_session.id,
+                    members: {
+                        $push: req.body.user_id
+                    }
+                })
                 .then((result) => {
                     response_helper.sendGetResponse(req, res, result, null, 2)
                 })
@@ -276,11 +407,11 @@ router
         }
         if (user_session && user_session.id) {
             GroupDao.findOneByIdAndUpdate(req.body.group_id, {
-                modified_by: user_session.id,
-                $pullAll: {
-                    members: [req.body.user_id]
-                }
-            })
+                    modified_by: user_session.id,
+                    $pullAll: {
+                        members: [req.body.user_id]
+                    }
+                })
                 .then((result) => {
                     response_helper.sendGetResponse(req, res, result, null, 2)
                 })
