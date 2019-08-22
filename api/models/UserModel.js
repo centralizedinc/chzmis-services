@@ -3,7 +3,7 @@ var autoIncrement = require('mongoose-auto-increment-reworked').MongooseAutoIncr
 
 var UserModelSchema = new mongoose.Schema({
     account_id: {
-        type: String
+        type: Number
     },
     avatar: {
         type: String
@@ -24,14 +24,6 @@ var UserModelSchema = new mongoose.Schema({
     },
     address: {
         type: String
-    },
-    status: {
-        type: Number,
-        default: 0
-        /**
-         * 0 - registered
-         * 1 - confirmed 
-         */
     },
     phone: {
         type: String

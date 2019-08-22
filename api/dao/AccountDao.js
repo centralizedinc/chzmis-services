@@ -33,7 +33,9 @@ class AccountDao {
      * @param {String} email 
      */
     static findByEmail(email) {
-        return model.findOne({ email }).exec()
+        return model.findOne({
+            email
+        }).exec()
     }
 
     /**
@@ -48,7 +50,7 @@ class AccountDao {
      * @returns {Promise}
      * @param {Object} details 
      */
-    static create(details) {
+    static createAccount(details) {
         return (new model(details)).save()
     }
 
@@ -59,7 +61,11 @@ class AccountDao {
      */
     static updatePasswordEmail(email, new_password) {
         const password = bcrypt.hashSync(new_password, 10);
-        return model.findOneAndUpdate({ email }, { password }).exec()
+        return model.findOneAndUpdate({
+            email
+        }, {
+            password
+        }).exec()
     }
 
     /**
@@ -68,7 +74,11 @@ class AccountDao {
      * @param {String} session_token 
      */
     static saveSession(email, session_token) {
-        return model.findOneAndUpdate({ email }, { session_token }).exec()
+        return model.findOneAndUpdate({
+            email
+        }, {
+            session_token
+        }).exec()
     }
 }
 

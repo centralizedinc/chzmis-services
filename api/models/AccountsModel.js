@@ -24,6 +24,14 @@ var AccountModelSchema = new mongoose.Schema({
     nicknames: {
         type: String
     },
+    status: {
+        type: Number,
+        default: 0
+        /**
+         * 0 - registered
+         * 1 - confirmed 
+         */
+    },
     google_id: {
         type: String
     },

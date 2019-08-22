@@ -5,12 +5,12 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken')
 
 var UserDao = require('../dao/UserDao')
+var AccountDao = require('../dao/AccountDao')
 
 const ResponseHelper = require('../utils/response_helper');
 const response_helper = new ResponseHelper('AUTH')
 
 const ApplicationSettings = require('../utils/ApplicationSettings')
-
 
 router.route('/login')
     .post(passport.authenticate('login', {
@@ -48,7 +48,18 @@ router
             UserDao.create(data)
                 .then((result) => {
                     console.log("result data: " + JSON.stringify(result))
+                    var dataAccount = {
+                        id: result.account_id,
+                        email: result.email,
+                        password: data.password
+                    }
+                    AccountDao.createAccount(dataAccount).then((result) => {
+                        console.log("create account data result: " + JSON.stringify(result))
 
+                    }).catch((err) => {
+                        console.log("error account: " + JSON.stringify(err))
+                        response_helper.sendPostResponse(req, res, null, err, 0)
+                    });
                     response_helper.sendPostResponse(req, res, result, null, 0)
                 }).catch((err) => {
                     console.log("err data: " + JSON.stringify(err))
@@ -74,6 +85,8 @@ router.route('/auth/google/callback')
 router.route('/auth/facebook')
     .get(passport.authenticate('facebook'), (req, res) => {
         console.log('/auth/facebook')
+        console.log("req facebook: " + JSON.stringify(req))
+        console.log("res facebook: " + JSON.stringify(res))
     });
 //   .get((req, res)=>{
 //       res.json("HELLO")
