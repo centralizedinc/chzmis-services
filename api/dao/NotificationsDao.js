@@ -60,6 +60,7 @@ function emailNotifications(new_notifications, templateId, cb) {
         substitutions: substitutions
       };
       console.log("send message: " + JSON.stringify(msg))
+      console.log('sgMail :', sgMail);
       sgMail.send(msg)
       cb(null, msg)
     });

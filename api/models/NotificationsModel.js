@@ -27,18 +27,9 @@ NotificationsModelSchema.pre('findOneAndUpdate', function (callback) {
 NotificationsModelSchema.methods.getSubstitutions = function (cb) {
     var notification = this;
     var substitutions = Object.assign({
-        // module: notification.module,
-        // case_number: notification.case_number,
-        // action: notification.action,
-        // log_date: formatDate(notification.log_date),
+        account_id: notification.id,
         email: notification.email,
-        // name: notification.name,
-        // company_name: notification.company_name,
-        // product_name: notification.product_name,
-        // details: notification.details,
-        date_created: formatDate(notification.date_created),
-        // date_modified: formatDate(notification.date_modified),
-        // confirmation_url: notification.confirmation_url
+        date_created: formatDate(notification.date_created)
     }, notification.substitutions)
     console.log("model subs: " + JSON.stringify(substitutions))
     cb(substitutions)

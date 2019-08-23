@@ -22,6 +22,18 @@ class AccountDao {
 
     /**
      * @returns {Promise}
+     * @param {Number} id 
+     */
+    static findOneProfile(id) {
+        return model.findOneAndUpdate({
+            id: id
+        }, {
+            status: 2
+        })
+    }
+
+    /**
+     * @returns {Promise}
      * @param {Object} conditions 
      */
     static findOne(conditions) {

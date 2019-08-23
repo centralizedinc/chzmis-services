@@ -6,13 +6,10 @@ var router = require("express").Router();
 var NotificationsDao = require("../dao/NotificationsDao");
 
 // Utils
-var response_helper = require("../utils/response_helper");
 var ApplicationSettings = require("../utils/ApplicationSettings");
-
-// Utils
 var ResponseHelper = require("../utils/response_helper");
 
-var response_helper = new ResponseHelper('GROUP')
+var response_helper = new ResponseHelper('NOTIFICATION')
 
 router.route("/").get((req, res) => {
   NotificationsDao.getNotifications((err, notifications) => {

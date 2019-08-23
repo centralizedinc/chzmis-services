@@ -1,4 +1,3 @@
-
 module.exports = {
     mongodb_uri: "mongodb://heroku_dwdl1xnt:9j2bt4hk1qmch2jtu4q2ctc4pc@ds263816.mlab.com:63816/heroku_dwdl1xnt",
     invalid_email_auth: "Invalid Email",
@@ -9,9 +8,21 @@ module.exports = {
             code: 'GRP',
             name: 'Group'
         },
+        USER: {
+            code: 'USR',
+            name: 'User'
+        },
+        ACC: {
+            code: 'ACC',
+            name: 'Account'
+        },
         AUTH: {
             code: "AUT",
             name: "Authentication"
+        },
+        NOTIFICATION: {
+            code: "NTF",
+            name: "Notification"
         }
     }
 }

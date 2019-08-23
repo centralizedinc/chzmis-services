@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 
 var UserDao = require('../dao/UserDao')
 var AccountDao = require('../dao/AccountDao')
+// var NotificationDao = require('../dao/NotificationsDao')
 
 const ResponseHelper = require('../utils/response_helper');
 const response_helper = new ResponseHelper('AUTH')
@@ -55,12 +56,25 @@ router
                     }
                     AccountDao.createAccount(dataAccount).then((result) => {
                         console.log("create account data result: " + JSON.stringify(result))
-
+                        response_helper.sendPostResponse(req, res, result, null, 0)
                     }).catch((err) => {
                         console.log("error account: " + JSON.stringify(err))
                         response_helper.sendPostResponse(req, res, null, err, 0)
                     });
-                    response_helper.sendPostResponse(req, res, result, null, 0)
+                    // NotificationDao.emailNotifications({
+                    //         id: result.account_id,
+                    //         name: result.name,
+                    //         email: result.email,
+                    //         date_created: result.date_created
+                    //     },
+                    //     ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE"),
+                    //     // "d-1bb8926aad60421c91a2a883b963944c",
+                    //     (err, notifications) => {
+                    //         console.log('err :', err);
+                    //         console.log("response helper notification: " + JSON.stringify(notifications))
+                    //         response_helper.sendPostResponse(req, res, notifications, null, 0);
+                    //     }
+                    // );
                 }).catch((err) => {
                     console.log("err data: " + JSON.stringify(err))
                     response_helper.sendPostResponse(req, res, null, err, 0)
