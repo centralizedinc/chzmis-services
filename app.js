@@ -13,10 +13,10 @@ app.use(cors());
 app.options('*', cors())
 
 /****** Connect Database ******/
-require('./api/utils/db_helper').connect();
+require('./api/utils/db_helper').connect(app);
 
 app.use('/', require('./api/routes/public_router'));
-app.use('/notification', require('./api/routes/notifications_router'));
+
 app.use('/groups', passport.authenticate('jwt', {
     session: false
 }), require('./api/routes/group_router'));

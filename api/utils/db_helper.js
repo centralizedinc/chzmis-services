@@ -1,15 +1,14 @@
-
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird')
 
 var SettingsDao = require('../dao/SettingsDao');
 var ApplicationSettings = require('./ApplicationSettings');
 
-function connect() {
+function connect(app) {
     mongoose.connect(process.env.MONGODB_URI || require('./constant_helper').mongodb_uri, {
-        promiseLibrary: require('bluebird'),
-        useNewUrlParser: true
-    })
+            promiseLibrary: require('bluebird'),
+            useNewUrlParser: true
+        })
         .then(() => {
             console.log('connection successful');
 
@@ -24,6 +23,8 @@ function connect() {
             require('../auth/auth')
             require('../auth/google')
             require('../auth/facebook')
+
+            app.use('/notification', require('../routes/notifications_router'));
         }).catch((err) => console.error(err));
 }
 
