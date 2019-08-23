@@ -9,6 +9,10 @@ module.exports = {
             code: 'GRP',
             name: 'Group'
         },
+        USER: {
+            code: 'USR',
+            name: 'User'
+        },
         AUTH: {
             code: "AUT",
             name: "Authentication"

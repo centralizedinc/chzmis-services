@@ -20,6 +20,7 @@ app.use('/notification', require('./api/routes/notifications_router'));
 app.use('/groups', require('./api/routes/group_router'));
 app.use('/accounts', require('./api/routes/account_router'));
 app.use('/connections', require('./api/routes/connections_router'));
+app.use('/users', require('./api/routes/user_router'));
 app.use('/', require('./api/routes/public_router'));
 
 

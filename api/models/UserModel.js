@@ -3,7 +3,7 @@ var autoIncrement = require('mongoose-auto-increment-reworked').MongooseAutoIncr
 
 var UserModelSchema = new mongoose.Schema({
     account_id: {
-        type: Number
+        type: String
     },
     avatar: {
         type: String

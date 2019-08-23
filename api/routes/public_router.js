@@ -17,8 +17,8 @@ router.route('/login')
         session: false
     }), (req, res) => {
         UserDao.findOne({
-                account_id: req.user._id
-            })
+            account_id: req.user._id
+        })
             .then((user) => {
                 const token = jwt.sign({
                     id: req.user._id,
@@ -55,12 +55,11 @@ router
                     }
                     AccountDao.createAccount(dataAccount).then((result) => {
                         console.log("create account data result: " + JSON.stringify(result))
-
+                        response_helper.sendPostResponse(req, res, result, null, 0)
                     }).catch((err) => {
                         console.log("error account: " + JSON.stringify(err))
                         response_helper.sendPostResponse(req, res, null, err, 0)
                     });
-                    response_helper.sendPostResponse(req, res, result, null, 0)
                 }).catch((err) => {
                     console.log("err data: " + JSON.stringify(err))
                     response_helper.sendPostResponse(req, res, null, err, 0)
@@ -94,8 +93,8 @@ router.route('/auth/facebook')
 
 router.route('/auth/facebook/callback')
     .get(passport.authenticate('facebook', {
-            session: false
-        }),
+        session: false
+    }),
         (req, res) => {
             // Successful authentication, redirect home.
             console.log('/auth/facebook/callback')

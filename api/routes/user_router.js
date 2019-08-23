@@ -67,3 +67,27 @@ router
 
         })
     })
+
+router.route('/accountid')
+    .get((req, res) => {
+        UserDao.findOneByAccountID(req.query.account_id)
+            .then((result) => {
+                response_helper.sendGetResponse(req, res, result, null, 2)
+            }).catch((err) => {
+                response_helper.sendGetResponse(req, res, null, err, 2)
+            });
+    })
+    .post((req, res) => {
+        UserDao.find({
+            account_id: {
+                $in: req.body.accounts
+            }
+        })
+            .then((result) => {
+                response_helper.sendPostResponse(req, res, result, null, 2)
+            }).catch((err) => {
+                response_helper.sendPostResponse(req, res, null, err, 2)
+            });
+    })
+
+module.exports = router
