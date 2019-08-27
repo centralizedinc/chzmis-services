@@ -38,4 +38,4 @@ CommentsModelSchema.pre('findOneAndUpdate', function (callback) {
     callback();
 });
 
-module.exports = mongoose.model('accounts', CommentsModelSchema)
+module.exports = mongoose.model('comments', CommentsModelSchema)

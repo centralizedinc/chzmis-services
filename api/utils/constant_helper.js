@@ -13,6 +13,18 @@ module.exports = {
             code: 'USR',
             name: 'User'
         },
+        CONNECTIONS: {
+            code: 'CNT',
+            name: 'Connections'
+        },
+        POSTS: {
+            code: 'PST',
+            name: 'Post'
+        },
+        COMMENTS: {
+            code: 'CMT',
+            name: 'Comments'
+        },
         AUTH: {
             code: "AUT",
             name: "Authentication"

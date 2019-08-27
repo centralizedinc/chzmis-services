@@ -1,5 +1,7 @@
 "use strict";
 
+var mongoose = require('mongoose')
+
 var model = require('../models/CommentsModel');
 
 class CommentsDao {
@@ -48,6 +50,18 @@ class CommentsDao {
      */
     static find(conditions) {
         return model.find(conditions).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
+     * @param {Array} ids 
+     */
+    static findByIds(ids) {
+        if (!Array.isArray(ids)) ids = [ids]
+        var _ids = ids.map(v = mongoose.Types.ObjectId(v))
+        return model.find({
+            '_id': { $in: _ids }
+        }).lean().exec()
     }
 
     /**

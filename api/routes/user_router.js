@@ -18,7 +18,7 @@ router
     // Get user
     .route("/")
     .get((req, res) => {
-        var user_session = null;
+        // var user_session = null;
         // if (req.headers && req.headers.access_token) {
         //     var token = req.headers.access_token;
         //     user_session = jwt.decode(token);

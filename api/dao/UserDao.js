@@ -25,7 +25,7 @@ class UserDao {
      * @param {String} account_id 
      */
     static findOneByAccountID(account_id) {
-        return model.findById(account_id).lean().exec()
+        return model.findOne({ account_id }).lean().exec()
     }
 
     /**

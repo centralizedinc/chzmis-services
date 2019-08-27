@@ -27,7 +27,7 @@ class ConnectionsDao {
      */
     static findOneInMember(user_id) {
         return model.find({
-            members: user_id,
+            "members.account_id": user_id,
             status: 1
         }).lean().exec()
     }
