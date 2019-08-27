@@ -23,9 +23,9 @@ router
     })
 
 router
-    .route('/ids')
+    .route('/posts')
     .post((req, res) => {
-        CommentsDao.findByIds(req.body)
+        CommentsDao.findByPostIds(req.body)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 1)
             }).catch((err) => {

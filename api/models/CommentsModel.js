@@ -3,6 +3,9 @@ var CommentsModelSchema = new mongoose.Schema({
     id: {
         type: String
     },
+    post_id: {
+        type: String
+    },
     author: {
         type: String
     },

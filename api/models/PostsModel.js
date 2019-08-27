@@ -15,7 +15,6 @@ var PostsModelSchema = new mongoose.Schema({
     uploads: [],
     likes: [],
     dislikes: [],
-    comments: [],
     parent_id: {
         type: String
     },
