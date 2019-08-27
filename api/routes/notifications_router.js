@@ -6,8 +6,10 @@ var router = require("express").Router();
 var NotificationsDao = require("../dao/NotificationsDao");
 
 // Utils
-var response_helper = require("../utils/response_helper");
 var ApplicationSettings = require("../utils/ApplicationSettings");
+var ResponseHelper = require("../utils/response_helper");
+
+var response_helper = new ResponseHelper('NOTIFICATION')
 
 router.route("/").get((req, res) => {
   NotificationsDao.getNotifications((err, notifications) => {
@@ -22,12 +24,14 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/registration").post((req, res) => {
+  console.log('ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE") :', ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE"));
   NotificationsDao.emailNotifications(
     req.body,
     ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE"),
-    "746f8913-1ea5-4f5b-a5e9-69574462137e",
+    // "d-1bb8926aad60421c91a2a883b963944c",
     (err, notifications) => {
-      console.log("response helper notification: " + JSON.stringify(notification))
+      console.log('err :', err);
+      console.log("response helper notification: " + JSON.stringify(notifications))
       response_helper.sendPostResponse(req, res, notifications, null, 0);
     }
   );

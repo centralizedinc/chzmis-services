@@ -4,9 +4,10 @@ var router = require("express").Router();
 const sgMail = require("@sendgrid/mail");
 var ApplicationSettings = require("../utils/ApplicationSettings");
 
+console.log('ApplicationSettings.getValue("SENDGRID_API_KEY") :', ApplicationSettings.getValue("SENDGRID_API_KEY"))
+
 sgMail.setApiKey(
-  ApplicationSettings.getValue("SENDGRID_API_KEY") ||
-  "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"
+  ApplicationSettings.getValue("SENDGRID_API_KEY") || process.env.SENDGRID_API_KEY
 );
 sgMail.setSubstitutionWrappers("{{", "}}");
 
@@ -42,53 +43,30 @@ function addNotifications(new_notifications, cb_notifications) {
 }
 
 // Email Notification
-function emailNotifications(new_notifications, cb_notifications, templateId) {
+function emailNotifications(new_notifications, templateId, cb) {
   var notifications = new NotificationsModel(new_notifications);
   console.log("notification: " + JSON.stringify(notifications))
-  console.log("cb_notifications: " + JSON.stringify(cb_notifications))
+  // console.log("cb_notifications: " + JSON.stringify(cb_notifications))
   console.log("templateId: " + JSON.stringify(templateId))
   if (notifications.date_created) notifications.date_created = new Date();
-  notifications.getSubstitutions(substitutions => {
-    console.log("substitutions :", substitutions);
-    var msg = {
-      to: notifications.email,
-      from: "chzmis@chz.com",
-      // from: ApplicationSettings.getValue("NOTIFICATION_SENDER_EMAIL"),
-      templateId: templateId,
-      substitutions: substitutions
-    };
-    sgMail.send(msg)
-    // .then(result => {
-    //   console.log("sgMail result :", result);
-    //   var status = {
-    //     module: notifications.module,
-    //     status: "email sent",
-    //     date: new Date()
-    //   };
-    //   // notifications.details.push(status);
-    //   notifications.save(err => {
-    //     console.log("ERROR1: " + JSON.stringify(err));
-    //     cb_notifications(err, notifications);
-    //   });
-    // })
-    // .catch(error => {
-    //   console.log("ERROR2: " + JSON.stringify(error));
-    //   var status = {
-    //     module: notifications.module,
-    //     action: notifications.action,
-    //     company_name: notifications.company_name,
-    //     product_name: notifications.product_name,
-    //     status: "email didn't sent",
-    //     date: new Date(),
-    //     error: error
-    //   };
-    //   notifications.details.push(status);
-    //   notifications.save(err => {
-    //     console.log("ERROR3: " + JSON.stringify(err));
-    //     cb_notifications(err, notifications);
-    //   });
-    // });
-  });
+  try {
+    notifications.getSubstitutions(substitutions => {
+      console.log("substitutions :", substitutions);
+      var msg = {
+        to: notifications.email,
+        from: "chzmis@chz.com",
+        // from: ApplicationSettings.getValue("NOTIFICATION_SENDER_EMAIL"),
+        templateId: templateId,
+        substitutions: substitutions
+      };
+      console.log("send message: " + JSON.stringify(msg))
+      console.log('sgMail :', sgMail);
+      sgMail.send(msg)
+      cb(null, msg)
+    });
+  } catch (error) {
+    cb(error)
+  }
 }
 
 // Modify Notifications

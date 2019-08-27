@@ -6,15 +6,33 @@ var router = require("express").Router();
 var GroupDao = require('../dao/GroupDao');
 var ChannelDao = require('../dao/ChannelsDao');
 var ConnectionDao = require('../dao/ConnectionsDao');
-
+var AccountDao = require('../dao/AccountDao');
 
 // Utils
 var ResponseHelper = require("../utils/response_helper");
 
-var response_helper = new ResponseHelper('GROUP')
+var response_helper = new ResponseHelper('ACC')
 //Jwt
-var jwt = require('jsonwebtoken')
+// var jwt = require('jsonwebtoken')
 
+/******* CONFIRM ACCOUNT *******/
+router.route("/confirmation")
+    .post((req, res) => {
+        var account_id = req.body.id
+        // if (req.headers && req.headers.access_token) {
+        //     var token = req.headers.access_token;
+        //     user_session = jwt.decode(token);
+        // }
+
+        AccountDao.findOneProfile(account_id)
+            .then((result) => {
+                console.log("AccountDao find profile: " + JSON.stringify(result))
+                response_helper.sendPostResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                console.log("AccountDao fin profile error: " + JSON.stringify(err))
+                response_helper.sendPostResponse(req, res, null, err, 0)
+            })
+    })
 /******* CHANNELS *******/
 router
     .route('/')

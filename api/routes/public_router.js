@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 
 var UserDao = require('../dao/UserDao')
 var AccountDao = require('../dao/AccountDao')
+// var NotificationDao = require('../dao/NotificationsDao')
 
 const ResponseHelper = require('../utils/response_helper');
 const response_helper = new ResponseHelper('AUTH')
@@ -17,8 +18,8 @@ router.route('/login')
         session: false
     }), (req, res) => {
         UserDao.findOne({
-            account_id: req.user._id
-        })
+                account_id: req.user._id
+            })
             .then((user) => {
                 const token = jwt.sign({
                     id: req.user._id,
@@ -60,6 +61,20 @@ router
                         console.log("error account: " + JSON.stringify(err))
                         response_helper.sendPostResponse(req, res, null, err, 0)
                     });
+                    // NotificationDao.emailNotifications({
+                    //         id: result.account_id,
+                    //         name: result.name,
+                    //         email: result.email,
+                    //         date_created: result.date_created
+                    //     },
+                    //     ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE"),
+                    //     // "d-1bb8926aad60421c91a2a883b963944c",
+                    //     (err, notifications) => {
+                    //         console.log('err :', err);
+                    //         console.log("response helper notification: " + JSON.stringify(notifications))
+                    //         response_helper.sendPostResponse(req, res, notifications, null, 0);
+                    //     }
+                    // );
                 }).catch((err) => {
                     console.log("err data: " + JSON.stringify(err))
                     response_helper.sendPostResponse(req, res, null, err, 0)
@@ -93,8 +108,8 @@ router.route('/auth/facebook')
 
 router.route('/auth/facebook/callback')
     .get(passport.authenticate('facebook', {
-        session: false
-    }),
+            session: false
+        }),
         (req, res) => {
             // Successful authentication, redirect home.
             console.log('/auth/facebook/callback')
