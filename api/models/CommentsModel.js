@@ -9,9 +9,6 @@ var CommentsModelSchema = new mongoose.Schema({
     author: {
         type: String
     },
-    avatar: {
-        type: String
-    },
     message: {
         type: String
     },

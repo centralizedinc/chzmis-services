@@ -1,6 +1,7 @@
 "use strict";
 
 var model = require('../models/ConnectionsModel');
+var mongoose = require('mongoose')
 
 class ConnectionsDao {
 
@@ -55,6 +56,20 @@ class ConnectionsDao {
      */
     static find(conditions) {
         return model.find(conditions).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static findNameAndId() {
+        return model.find({}).select("_id name members").lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static connect(data) {
+        return model.findByIdAndUpdate(data.connection, { $push: { members: { account_id: data.account_id, role: 0 } } }).exec()
     }
 
     /**
