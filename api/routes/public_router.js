@@ -44,6 +44,7 @@ router
         var data = req.body;
         console.log("signup data: " + JSON.stringify(data))
         if (data) {
+            var result ={}
             AccountDao.create({
                 email: data.email,
                 method: data.method,
@@ -51,6 +52,7 @@ router
                 google_id: data.google_id,
                 facebook_id: data.facebook_id
             }).then((account) => {
+                result.account = account
                 const user = {
                     account_id: account.account_id,
                     avatar: data.avatar,
@@ -59,8 +61,11 @@ router
                     phone: data.phone,
                     email: data.email
                 }
+                console.log('account :', account);
                 return UserDao.create(user)
-            }).then((result) => {
+            }).then((user) => {
+                result.user = user
+                console.log('result :', result);
                 response_helper.sendPostResponse(req, res, result, null, 0)
             }).catch((err) => {
                 console.log("err data: " + JSON.stringify(err))
