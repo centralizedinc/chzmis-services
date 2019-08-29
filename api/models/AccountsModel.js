@@ -15,8 +15,7 @@ var AccountModelSchema = new mongoose.Schema({
         // unique: true
     },
     method: {
-        type: String,
-        enum: ['local', 'google', 'facebook']
+        type: String
     },
     password: {
         type: String,
