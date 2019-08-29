@@ -85,7 +85,7 @@ router
 /***** SIGN UP USING GOOGLE ACCOUNT *****/
 router.route('/auth/google')
     .get(passport.authenticate('google', {
-        scope: ['https://www.googleapis.com/auth/plus.login']
+        scope: ['profile', 'email']
     }));
 
 router.route('/auth/google/callback')
