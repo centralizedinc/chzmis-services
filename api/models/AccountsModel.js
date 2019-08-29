@@ -9,6 +9,9 @@ var AccountModelSchema = new mongoose.Schema({
     auto_id: {
         type: Number
     },
+    category: {
+        type: String
+    },
     email: {
         type: String,
         // required: [true, 'Email is a required field'],
