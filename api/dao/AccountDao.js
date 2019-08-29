@@ -28,8 +28,8 @@ class AccountDao {
         return model.findOneAndUpdate({
             id: id
         }, {
-            status: 2
-        })
+                status: 2
+            })
     }
 
     /**
@@ -62,8 +62,42 @@ class AccountDao {
      * @returns {Promise}
      * @param {Object} details 
      */
-    static createAccount(details) {
-        return (new model(details)).save()
+    static create(details) {
+        return new Promise((resolve, reject) => {
+            (new model(details)).save()
+                .then((result) => {
+                    const account_id = this.generateAccountId(result.auto_id);
+                    return this.modifyById(result._id, { account_id })
+                })
+                .then((result) => {
+                    resolve(result)
+                })
+                .catch((err) => {
+                    reject(err)
+                });
+        })
+    }
+
+    static generateAccountId(auto_id) {
+        return new Date().getTime().toString() + auto_id.toString()
+    }
+
+    /**
+     * @returns {Promise}
+     * @param {String} id 
+     * @param {AccountModel} updated_account 
+     */
+    static modifyById(id, updated_account) {
+        return model.findByIdAndUpdate(id, updated_account).exec()
+    }
+
+    /**
+     * @returns {Promise}
+     * @param {Object} conditions 
+     * @param {AccountModel} updated_account 
+     */
+    static modifyOne(conditions, updated_account) {
+        return model.findOneAndUpdate(conditions, updated_account).exec()
     }
 
     /**
@@ -76,8 +110,8 @@ class AccountDao {
         return model.findOneAndUpdate({
             email
         }, {
-            password
-        }).exec()
+                password
+            }).exec()
     }
 
     /**
@@ -89,8 +123,8 @@ class AccountDao {
         return model.findOneAndUpdate({
             email
         }, {
-            session_token
-        }).exec()
+                session_token
+            }).exec()
     }
 }
 

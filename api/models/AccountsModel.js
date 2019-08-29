@@ -1,9 +1,13 @@
 var mongoose = require('mongoose')
 var bcrypt = require('bcrypt-nodejs');
+var autoIncrement = require('mongoose-auto-increment-reworked').MongooseAutoIncrementID;
 
 var AccountModelSchema = new mongoose.Schema({
-    id: {
+    account_id: {
         type: String
+    },
+    auto_id: {
+        type: Number
     },
     email: {
         type: String,
@@ -18,12 +22,15 @@ var AccountModelSchema = new mongoose.Schema({
         type: String,
         // required: [true, 'Password is a required field']
     },
-    favorites: {
-        type: String
-    },
-    nicknames: {
-        type: String
-    },
+    favorites: [],
+    nicknames: [{
+        parent: {
+            type: String
+        },
+        alias: {
+            type: String
+        }
+    }],
     status: {
         type: Number,
         default: 0
@@ -72,5 +79,26 @@ AccountModelSchema.pre('findOneAndUpdate', function (callback) {
 AccountModelSchema.methods.isValidPassword = async function (password) {
     return await bcrypt.compareSync(password, this.password);
 }
+
+const options = {
+    field: 'auto_id', // auto_id will have an auto-incrementing value
+    incrementBy: 1, // incremented by 2 every time
+    nextCount: false, // Not interested in getting the next count - don't add it to the model
+    // resetCount: 'reset', // The model and each document can now reset the counter via the reset() method
+    startAt: 0, // Start the counter at 1000
+    unique: false // Don't add a unique index
+};
+
+const plugin = new autoIncrement(AccountModelSchema, 'accounts', options);
+// users._nextCount()
+//     .then(count => console.log(`The next ID will be ${count}`));
+plugin.applyPlugin()
+    .then(() => {
+        console.log("############### init plugin")
+    })
+    .catch(e => {
+        // Plugin failed to initialise
+        console.log("############### init failed: " + e);
+    });
 
 module.exports = mongoose.model('accounts', AccountModelSchema)
