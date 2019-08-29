@@ -30,6 +30,9 @@ var UserModelSchema = new mongoose.Schema({
     email: {
         type: String
     },
+    birthdate: {
+        type: String
+    },
     date_created: {
         type: Date,
         default: new Date()
