@@ -14,7 +14,14 @@ const temp_account_id = '3'
 router
     .route('/')
     .post((req, res) => {
-        ConnectionsDao.create(req.body)
+        var connection = req.body;
+        if (!connection.members) connection.members = []
+        connection.members.push({
+            account_id: temp_account_id,
+            role: 1
+        })
+        connection.created_by = temp_account_id
+        ConnectionsDao.create(connection)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 0)
             }).catch((err) => {
