@@ -31,7 +31,7 @@ var UserModelSchema = new mongoose.Schema({
         type: String
     },
     birthdate: {
-        type: String
+        type: Date
     },
     date_created: {
         type: Date,
