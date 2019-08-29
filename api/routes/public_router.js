@@ -17,6 +17,7 @@ router.route('/login')
     .post(passport.authenticate('login', {
         session: false
     }), (req, res) => {
+        console.log("login req data: " + JSON.stringify(req.body))
         UserDao.findOne({
             account_id: req.user._id
         })
