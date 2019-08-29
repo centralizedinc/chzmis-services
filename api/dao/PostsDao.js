@@ -15,12 +15,10 @@ class PostsDao {
 
     /**
      * @returns {Promise}
-     * @param {String} author 
      * @param {String} parent_id
      */
-    static findAllAuthorParent(author, parent_id) {
+    static findAllByParent(parent_id) {
         return model.find({
-            author: author,
             parent_id: parent_id
         }).lean().exec()
     }
@@ -48,6 +46,13 @@ class PostsDao {
      */
     static find(conditions) {
         return model.find(conditions).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static findPublic() {
+        return model.find({ is_public: true }).lean().exec()
     }
 
     /**

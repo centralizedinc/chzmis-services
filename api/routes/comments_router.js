@@ -3,18 +3,18 @@
 var router = require("express").Router();
 
 // DAO
-var ConnectionsDao = require('../dao/ConnectionsDao');
+var CommentsDao = require('../dao/CommentsDao');
 
 // Utils
 var ResponseHelper = require("../utils/response_helper");
 
-var response_helper = new ResponseHelper('CONNECTIONS')
+var response_helper = new ResponseHelper('COMMENTS')
 
 
 router
     .route('/')
     .post((req, res) => {
-        ConnectionsDao.create(req.body)
+        CommentsDao.create(req.body)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 0)
             }).catch((err) => {
@@ -23,14 +23,13 @@ router
     })
 
 router
-    .route('/:account_id')
-    .get((req, res) => {
-        console.log('req.params.account_id.toString() :', req.params.account_id.toString());
-        ConnectionsDao.findOneInMember(req.params.account_id)
+    .route('/posts')
+    .post((req, res) => {
+        CommentsDao.findByPostIds(req.body)
             .then((result) => {
-                response_helper.sendGetResponse(req, res, result, null, 1)
+                response_helper.sendPostResponse(req, res, result, null, 1)
             }).catch((err) => {
-                response_helper.sendGetResponse(req, res, null, err, 1)
+                response_helper.sendPostResponse(req, res, null, err, 1)
             });
     })
 

@@ -3,6 +3,9 @@ var CommentsModelSchema = new mongoose.Schema({
     id: {
         type: String
     },
+    post_id: {
+        type: String
+    },
     author: {
         type: String
     },
@@ -38,4 +41,4 @@ CommentsModelSchema.pre('findOneAndUpdate', function (callback) {
     callback();
 });
 
-module.exports = mongoose.model('accounts', CommentsModelSchema)
+module.exports = mongoose.model('comments', CommentsModelSchema)

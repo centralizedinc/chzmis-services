@@ -52,6 +52,16 @@ class CommentsDao {
 
     /**
      * @returns {Promise}
+     * @param {Array} post_ids
+     */
+    static findByPostIds(post_ids) {
+        return model.find({
+            post_id: { $in: post_ids }
+        }).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
      * @param {Object} details 
      */
     static create(details) {
