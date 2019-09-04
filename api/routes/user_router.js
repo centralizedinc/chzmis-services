@@ -90,4 +90,13 @@ router.route('/accountid')
             });
     })
 
+router.route('/details')
+    .get((req, res) => {
+        UserDao.getUserDetails()
+            .then((result) => {
+                response_helper.sendGetResponse(req, res, result, null, 3)
+            }).catch((err) => {
+                response_helper.sendGetResponse(req, res, null, err, 3)
+            });
+    })
 module.exports = router

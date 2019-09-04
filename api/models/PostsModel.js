@@ -1,8 +1,5 @@
 var mongoose = require('mongoose')
 var PostsModelSchema = new mongoose.Schema({
-    id: {
-        type: String
-    },
     author: {
         type: String
     },

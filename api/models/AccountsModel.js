@@ -44,7 +44,13 @@ var AccountModelSchema = new mongoose.Schema({
     google_id: {
         type: String
     },
+    google_access_token: {
+        type: String
+    },
     facebook_id: {
+        type: String
+    },
+    facebook_access_token: {
         type: String
     },
     session_token: {
@@ -78,8 +84,13 @@ AccountModelSchema.pre('findOneAndUpdate', function (callback) {
     callback();
 });
 
-AccountModelSchema.methods.isValidPassword = async function (password) {
-    return await bcrypt.compareSync(password, this.password);
+AccountModelSchema.methods.isValidPassword = function (password) {
+    return new Promise((resolve, reject) => {
+        bcrypt.compare(password, this.password, (err, isValid) => {
+            if (!err) resolve(isValid)
+            else reject(err)
+        });
+    })
 }
 
 const options = {
