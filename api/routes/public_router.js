@@ -49,8 +49,8 @@ router
                 email: data.email,
                 method: data.method,
                 password: data.password,
-                google_id: data.google_id,
-                facebook_id: data.facebook_id
+                // google_id: data.google_id,
+                // facebook_id: data.facebook_id
             }).then((account) => {
                 result.account = account
                 const user = {
@@ -59,7 +59,8 @@ router
                     name: data.name,
                     address: data.address,
                     phone: data.phone,
-                    email: data.email
+                    email: data.email,
+                    birthdate: data.birthdate
                 }
                 console.log('account :', account);
                 return UserDao.create(user)
@@ -85,6 +86,11 @@ router.route('/auth/google/callback')
     .get(passport.authenticate('google', {
         session: false
     }), (req, res) => {
+
+        if (id ==! null) {
+
+        }
+
         res.redirect('http://localhost:8080/#/googleSignUp?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
     });
 

@@ -19,7 +19,7 @@ passport.use(new FacebookStrategy({
         console.log('refreshToken :', refreshToken);
         console.log('profile :', JSON.stringify(profile._json.picture));
         console.log('profile :', profile);
-        done(null, profile);
+        done(null, {profile, accessToken});
     }
 ));
 // const dao = require('../dao/AccountDao');
