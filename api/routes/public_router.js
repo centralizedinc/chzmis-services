@@ -2,7 +2,6 @@
 
 const router = require("express").Router();
 const passport = require('passport');
-const jwt = require('jsonwebtoken')
 
 var UserDao = require('../dao/UserDao')
 var AccountDao = require('../dao/AccountDao')
@@ -11,30 +10,11 @@ var AccountDao = require('../dao/AccountDao')
 const ResponseHelper = require('../utils/response_helper');
 const response_helper = new ResponseHelper('AUTH')
 
-const ApplicationSettings = require('../utils/ApplicationSettings')
-
 router.route('/login')
     .post(passport.authenticate('login', {
         session: false
     }), (req, res) => {
-        console.log("login req data: " + JSON.stringify(req.body))
-        UserDao.findOne({
-            account_id: req.user._id
-        })
-            .then((user) => {
-                const token = jwt.sign({
-                    id: req.user._id,
-                    email: req.user.email
-                }, ApplicationSettings.getValue("JWT_SECRET_TOKEN"));
-                console.log('object');
-                response_helper.sendPostResponse(req, res, {
-                    account: req.user,
-                    user,
-                    token
-                }, null, 1)
-            }).catch((err) => {
-                response_helper.sendPostResponse(req, res, null, err, 1)
-            });
+        response_helper.sendPostResponse(req, res, req.user, null, 1)
     })
 
 
@@ -44,7 +24,7 @@ router
         var data = req.body;
         console.log("signup data: " + JSON.stringify(data))
         if (data) {
-            var result ={}
+            var result = {}
             AccountDao.create({
                 email: data.email,
                 method: data.method,
@@ -78,7 +58,7 @@ router
 /***** SIGN UP USING GOOGLE ACCOUNT *****/
 router.route('/auth/google')
     .get(passport.authenticate('google', {
-        scope: ['https://www.googleapis.com/auth/plus.login']
+        scope: ['profile', 'email']
     }));
 
 router.route('/auth/google/callback')
@@ -90,11 +70,7 @@ router.route('/auth/google/callback')
 
 /***** SIGN UP USING FACEBOOK ACCOUNT *****/
 router.route('/auth/facebook')
-    .get(passport.authenticate('facebook'), (req, res) => {
-        console.log('/auth/facebook')
-        console.log("req facebook: " + JSON.stringify(req))
-        console.log("res facebook: " + JSON.stringify(res))
-    });
+    .get(passport.authenticate('facebook', { scope: ["email"] }));
 
 router.route('/auth/facebook/callback')
     .get(passport.authenticate('facebook', {

@@ -4,7 +4,6 @@ var router = require("express").Router();
 const sgMail = require("@sendgrid/mail");
 var ApplicationSettings = require("../utils/ApplicationSettings");
 
-console.log('ApplicationSettings.getValue("SENDGRID_API_KEY") :', ApplicationSettings.getValue("SENDGRID_API_KEY"))
 
 sgMail.setApiKey(
   ApplicationSettings.getValue("SENDGRID_API_KEY") || process.env.SENDGRID_API_KEY

@@ -52,6 +52,26 @@ class AccountDao {
 
     /**
      * @returns {Promise}
+     * @param {String} facebook_id 
+     */
+    static findByFacebookID(facebook_id) {
+        return model.findOne({
+            facebook_id
+        }).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
+     * @param {String} google_id 
+     */
+    static findByGoogleID(google_id) {
+        return model.findOne({
+            google_id
+        }).lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
      * @param {Object} conditions 
      */
     static find(conditions) {

@@ -2,6 +2,8 @@
 
 var router = require("express").Router();
 
+const jwt = require('jsonwebtoken');
+
 // DAO
 var PostsDao = require('../dao/PostsDao');
 
@@ -14,6 +16,8 @@ var response_helper = new ResponseHelper('POSTS')
 router
     .route('/')
     .post((req, res) => {
+        var post = req.body;
+        post.author = jwt.decode(req.headers.access_token).account_id;
         PostsDao.create(req.body)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 0)

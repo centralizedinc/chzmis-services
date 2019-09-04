@@ -55,6 +55,13 @@ class UserDao {
 
     /**
      * @returns {Promise}
+     */
+    static getUserDetails() {
+        return model.find({}).select("account_id avatar name email").lean().exec()
+    }
+
+    /**
+     * @returns {Promise}
      * @param {String} id 
      * @param {Object} details 
      */

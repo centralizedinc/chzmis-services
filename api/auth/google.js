@@ -9,10 +9,10 @@ passport.use('google', new GoogleStrategy({
     clientSecret: ApplicationSettings.getValue("GOOGLE_CLIENT_SECRET"),
     callbackURL: ApplicationSettings.getValue("GOOGLE_CALLBACK_URL")
 },
-    function (accessToken, refreshToken, profile, done) {
-        console.log('accessToken :', accessToken);
+    function (google_access_token, refreshToken, profile, done) {
+        console.log('accessToken :', google_access_token);
         console.log('refreshToken :', refreshToken);
         console.log('profile :', profile);
-        done(null, profile);
+        done(null, { profile, google_access_token });
     }
 ));
