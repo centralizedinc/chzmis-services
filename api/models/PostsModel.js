@@ -12,6 +12,10 @@ var PostsModelSchema = new mongoose.Schema({
     uploads: [],
     likes: [],
     dislikes: [],
+    is_public: {
+        type: Boolean,
+        default: false
+    },
     parent_id: {
         type: String
     },

@@ -18,7 +18,8 @@ router
     .post((req, res) => {
         var post = req.body;
         post.author = jwt.decode(req.headers.access_token).account_id;
-        PostsDao.create(req.body)
+        console.log('post :', post);
+        PostsDao.create(post)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 0)
             }).catch((err) => {
