@@ -28,8 +28,10 @@ router.route('/')
 
 router.route('/avatar/:account_id')
     .post((req, res) => {
+        console.log('req.params.account_id :', req.params.account_id);
         const singleUpload = Uploader.uploadAvatar(req.params.account_id);
         singleUpload(req, res, function (err, some) {
+            console.log('req.file :', req.file);
             response_helper.sendPostResponse(req, res, req.file, err, 1)
         })
     })
@@ -44,19 +46,39 @@ router.route('/avatar/:account_id')
 //         })
 // })
 
-router.route('/post/:account_id')
+router.route('/connection/:connection_id')
     .post((req, res) => {
-        const upload = Uploader.uploadDocuments(req.params.account_id, "posts");
+        const directory = `connection/${req.params.connection_id}/${Date.now().toString()}`
+        const upload = Uploader.uploadDocuments(directory);
         upload(req, res, function (err, some) {
             response_helper.sendPostResponse(req, res, req.files, err, 2)
         })
     })
 
-router.route('/comment/:account_id')
+router.route('/connection/:connection_id/public')
     .post((req, res) => {
-        const upload = Uploader.uploadDocuments(req.params.account_id, "comments");
+        const directory = `connection/public/${req.params.connection_id}/${Date.now().toString()}`
+        const upload = Uploader.uploadDocuments(directory);
         upload(req, res, function (err, some) {
-            response_helper.sendPostResponse(req, res, req.files, err, 3)
+            response_helper.sendPostResponse(req, res, req.files, err, 2)
+        })
+    })
+
+router.route('/channel/:channel_id')
+    .post((req, res) => {
+        const directory = `channel/${req.params.channel_id}/${Date.now().toString()}`
+        const upload = Uploader.uploadDocuments(directory);
+        upload(req, res, function (err, some) {
+            response_helper.sendPostResponse(req, res, req.files, err, 2)
+        })
+    })
+
+router.route('/channel/:channel_id/public')
+    .post((req, res) => {
+        const directory = `channel/public/${req.params.channel_id}/${Date.now().toString()}`
+        const upload = Uploader.uploadDocuments(directory);
+        upload(req, res, function (err, some) {
+            response_helper.sendPostResponse(req, res, req.files, err, 2)
         })
     })
 

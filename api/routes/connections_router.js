@@ -89,13 +89,13 @@ router
 router
     .route('/:id')
     .post((req, res) => {
-        const { name, members } = req.body;
-        ConnectionsDao.modifyByID(req.params.id, { name, members })
+        const { avatar, name, members, status, favorites, topics } = req.body;
+        ConnectionsDao.modifyByID(req.params.id, { avatar, name, members, status, favorites, topics })
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 3)
             }).catch((err) => {
                 response_helper.sendPostResponse(req, res, null, err, 3)
             });
     })
-    
+
 module.exports = router;
