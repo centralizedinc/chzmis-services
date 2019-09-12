@@ -35,6 +35,10 @@ module.exports = {
         NOTIFICATION: {
             code: "NTF",
             name: "Notification"
+        },
+        UPLOAD: {
+            code: "UPL",
+            name: "Upload"
         }
     }
 }

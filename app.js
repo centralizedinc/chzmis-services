@@ -23,6 +23,7 @@ app.use('/connections', passport.authenticate('jwt', { session: false }), requir
 app.use('/users', passport.authenticate('jwt', { session: false }), require('./api/routes/user_router'));
 app.use('/post', passport.authenticate('jwt', { session: false }), require('./api/routes/post_router'));
 app.use('/comments', passport.authenticate('jwt', { session: false }), require('./api/routes/comments_router'));
+app.use('/upload', require('./api/routes/upload_router'));
 app.use('/', require('./api/routes/public_router'));
 
 

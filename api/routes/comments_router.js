@@ -1,6 +1,7 @@
 "use strict";
 
 var router = require("express").Router();
+const jwt = require("jsonwebtoken");
 
 // DAO
 var CommentsDao = require('../dao/CommentsDao');
@@ -14,7 +15,9 @@ var response_helper = new ResponseHelper('COMMENTS')
 router
     .route('/')
     .post((req, res) => {
-        CommentsDao.create(req.body)
+        var comment = req.body;
+        comment.author = jwt.decode(req.headers.access_token).account_id;
+        CommentsDao.create(comment)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 0)
             }).catch((err) => {
