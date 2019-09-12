@@ -14,14 +14,18 @@ passport.use(new FacebookStrategy({
     enableProof: true,
     profileFields: ['id', 'displayName', 'photos', 'email', 'gender', 'first_name', 'last_name', 'middle_name']
 },
-    function (facebook_access_token, refreshToken, profile, done) {
+
+    function (facebook_access_token, refreshToken, profile, done) 
+    {
         console.log('accessToken :', facebook_access_token);
         console.log('refreshToken :', refreshToken);
         console.log('profile :', JSON.stringify(profile._json.picture));
         console.log('profile :', profile);
+
         done(null, { profile, facebook_access_token });
     }
 ));
+
 // const dao = require('../dao/AccountDao');
 
 // const JWTstrategy = require('passport-jwt').Strategy;

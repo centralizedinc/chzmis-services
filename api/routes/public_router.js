@@ -66,11 +66,6 @@ router.route('/auth/google/callback')
     .get(passport.authenticate('google', {
         session: false
     }), (req, res) => {
-
-        if (id ==! null) {
-
-        }
-
         res.redirect('http://localhost:8080/#/googleSignUp?data=' + new Buffer(JSON.stringify(req.user)).toString('base64'))
     });
 
