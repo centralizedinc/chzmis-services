@@ -4,6 +4,8 @@ const FacebookStrategy = require('passport-facebook').Strategy;
 
 const ApplicationSettings = require('../utils/ApplicationSettings');
 
+const AccountDao = require('../dao/AccountDao');
+
 passport.use(new FacebookStrategy({
     // clientID: ApplicationSettings.getValue("FACEBOOK_CLIENT_ID"),
     // clientSecret: ApplicationSettings.getValue("FACEBOOK_CLIENT_SECRET"),
@@ -15,14 +17,24 @@ passport.use(new FacebookStrategy({
     profileFields: ['id', 'displayName', 'photos', 'email', 'gender', 'first_name', 'last_name', 'middle_name']
 },
 
-    function (facebook_access_token, refreshToken, profile, done) 
-    {
+    function (facebook_access_token, refreshToken, profile, done) {
         console.log('accessToken :', facebook_access_token);
         console.log('refreshToken :', refreshToken);
-        console.log('profile :', JSON.stringify(profile._json.picture));
         console.log('profile :', profile);
+        AccountDao.processFacebook({ profile, facebook_access_token })
+            .then((auth) => {
+                console.log('#############Account :', auth);
+                done(null, auth);
+            }).catch((err) => {
+                console.log('err :', err);
+                done(null, err);
+            });
+        // console.log('accessToken :', facebook_access_token);
+        // console.log('refreshToken :', refreshToken);
+        // console.log('profile :', JSON.stringify(profile._json.picture));
+        // console.log('profile :', profile);
 
-        done(null, { profile, facebook_access_token });
+        // done(null, { profile, facebook_access_token });
     }
 ));
 

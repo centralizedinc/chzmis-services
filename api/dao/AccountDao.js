@@ -67,6 +67,93 @@ class AccountDao {
         }).lean().exec()
     }
 
+    static processFacebook(facebook_account) {
+
+        var creation_mode = false;
+        var account_id = "";
+        var email = "";
+        var is_authenticated = false;
+        var user = {};
+        var account = "";
+
+        var auth = {
+            is_authenticated: false
+        }
+        console.log('facebook_account :', facebook_account);
+
+        return new Promise((resolve, reject) => {
+            model.findOne({
+                facebook_id: facebook_account.profile.id
+            })
+                .then((result) => {
+                    console.log('result :', result);
+                    if (!result) {
+                        creation_mode = true
+                        return this.create({
+                            email: facebook_account.profile.emails[0].value,
+                            method: facebook_account.profile.provider,
+                            facebook_id: facebook_account.profile.id,
+                            facebook_access_token: facebook_account.facebook_access_token
+                        })
+                    }
+                    else {
+                        console.log('ACCOUNT_ID :', result);
+                        account_id = result.account_id;
+                        email = result.email;
+                        return true;
+                    }
+                })
+                .then((result) => {
+                    console.log('result2 :', result);
+                    if (result) {
+                        console.log('creation_mode :', result);
+                        const token = jwt.sign({
+                            account_id: account_id,
+                            email: email,
+                            date: new Date()
+                        }, ApplicationSettings.getValue("JWT_SECRET_TOKEN"));
+                        // result.token = token;
+                        console.log('token :', token);
+                        auth.token = token
+                        return this.modifyOne({ account_id: account_id }, { session_token: token });
+                    }
+                })
+                .then((modified_account) => {
+                    console.log('modified_account :', modified_account);
+                    account = modified_account
+                    auth.account = modified_account;
+                    if(creation_mode)  return UserDao.create({
+                        account_id:auth.account.account_id,
+                        avatar: profile.photos[0].value ,
+                        name: {
+                            first: profile.name.givenName,
+                            last: profile.name.familyName
+                        },
+                        email:profile.emails[0].value
+                    })
+                    else return UserDao.findOne({ account_id: modified_account.account_id });
+
+
+                })
+                .then((user) => {
+                    auth.user = user
+                    // console.log('user :', user);
+                    console.log('auth :', auth);
+                    if (user) {
+                        this.user = user;
+                        auth.is_authenticated = true;
+                    }
+                    resolve(auth)
+                    // return done(null, result);
+                })
+                .catch((err) => {
+                    console.log('err :', err);
+                    reject(err)
+                });
+
+        })
+    }
+
     /**
      * @returns {Promise}
      * @param {String} google_id 
@@ -102,17 +189,17 @@ class AccountDao {
                             google_access_token: google_account.google_access_token
                         })
                     }
-                     else {
-                         console.log('ACCOUNT_ID :', result);
-                         this.account_id = result.account_id;
-                         this.email = result.email;
+                    else {
+                        console.log('ACCOUNT_ID :', result);
+                        this.account_id = result.account_id;
+                        this.email = result.email;
                         return this.creation_mode = true
                     }
                 })
                 .then((result) => {
                     console.log('result2 :', result);
                     if (result) {
-                            console.log('creation_mode :', result);
+                        console.log('creation_mode :', result);
                         const token = jwt.sign({
                             account_id: this.account_id,
                             email: this.email,
@@ -121,21 +208,19 @@ class AccountDao {
                         // result.token = token;
                         console.log('token :', token);
                         return this.modifyOne({ account_id: this.account_id }, { session_token: token });
-                    } 
-                    })
-                    .then((modified_account) => {
-                        console.log('modified_account :', modified_account);
-                        
-                        if (modified_account) return UserDao.findOne({ account_id: modified_account.account_id });
+                    }
+                })
+                .then((modified_account) => {
+                    console.log('modified_account :', modified_account);
+                    if (modified_account) return UserDao.findOne({ account_id: modified_account.account_id });
+                    resolve(modified_account)
 
-                       resolve (modified_account)
-                      
-                    })
-                    reject (err)
-                // .catch((err) => {
-                //     console.log('err :', err);
-                // });
-                    
+                })
+            reject(err)
+            // .catch((err) => {
+            //     console.log('err :', err);
+            // });
+
         })
     }
 

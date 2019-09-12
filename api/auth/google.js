@@ -17,7 +17,7 @@ passport.use('google', new GoogleStrategy({
         console.log('profile :', profile);
         AccountDao.processGoogle({ profile, google_access_token })
         .then((result) => {
-            console.log('Auth log :', result);
+            console.log('Account :', result.account_id);
             done(null, { profile, google_access_token });
         }).catch((err) => {
             console.log('err :', err);
