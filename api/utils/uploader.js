@@ -66,7 +66,7 @@ class Uploader {
     });
   }
 
-  static uploadDocuments(account_id, directory_type) {
+  static uploadDocuments(directory) {
     const upload = multer({
       storage: multerS3({
         s3: s3,
@@ -81,7 +81,7 @@ class Uploader {
           });
         },
         key: function (req, file, cb) {
-          cb(null, `${account_id}/${directory_type}/${Date.now().toString()}`);
+          cb(null, directory);
         }
       })
     });

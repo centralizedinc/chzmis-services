@@ -4,9 +4,7 @@ var UserModelSchema = new mongoose.Schema({
     account_id: {
         type: String
     },
-    avatar: {
-        type: String
-    },
+    avatar: {},
     name: {
         first: {
             type: String

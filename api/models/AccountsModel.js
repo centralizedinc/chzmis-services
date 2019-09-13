@@ -24,7 +24,15 @@ var AccountModelSchema = new mongoose.Schema({
         type: String,
         // required: [true, 'Password is a required field']
     },
-    favorites: [],
+    favorites: [{
+        type: {
+            type: Number
+            // 0 - Connection, 1 - Channel
+        },
+        parent_id: {
+            type: String
+        }
+    }],
     nicknames: [{
         parent: {
             type: String

@@ -6,6 +6,9 @@ var ConnectionsModelSchema = new mongoose.Schema({
     name: {
         type: String
     },
+    avatar: {
+        type: Object
+    },
     status: {
         type: Number,
         default: 1
