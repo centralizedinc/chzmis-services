@@ -58,6 +58,14 @@ class AccountDao {
 
     /**
      * @returns {Promise}
+     * @param {String} local_data
+    */ 
+    static createLocalAccount(local_data){
+        return (new model(local_data)).save()
+    }
+
+    /**
+     * @returns {Promise}
      * @param {String} facebook_id 
      */
 

@@ -35,12 +35,12 @@ router
                 result.account = account
                 const user = {
                     account_id: account.account_id,
-                    avatar: data.avatar,
+                    // avatar: data.avatar,
                     name: data.name,
-                    address: data.address,
-                    phone: data.phone,
+                    // address: data.address,
+                    // phone: data.phone,
                     email: data.email,
-                    birthdate: data.birthdate
+                    // birthdate: data.birthdate
                 }
                 console.log('account :', account);
                 return UserDao.create(user)
