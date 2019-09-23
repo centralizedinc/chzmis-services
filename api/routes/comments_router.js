@@ -36,4 +36,14 @@ router
             });
     })
 
+router.route('/postid/:post_id')
+    .get((req, res) => {
+        CommentsDao.findWithLimitSortDateByPostId(req.params.post_id, req.query.date, req.query.limit)
+            .then((result) => {
+                response_helper.sendGetResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                response_helper.sendGetResponse(req, res, null, err, 0)
+            });
+    })
+
 module.exports = router;

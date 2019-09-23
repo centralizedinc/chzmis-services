@@ -86,6 +86,7 @@ AccountModelSchema.pre('save', async function (callback) {
 });
 
 AccountModelSchema.pre('findOneAndUpdate', function (callback) {
+    console.log('this :', this._update);
     this.options.new = true;
     this.options.runValidators = true;
     this._update.date_modified = new Date();
