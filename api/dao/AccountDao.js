@@ -322,6 +322,35 @@ class AccountDao {
                 session_token
             }).exec()
     }
+
+    /**
+     * 
+     * @param {String} account_id 
+     * @param {Number} type 
+     * @param {String} parent_id 
+     */
+    static addToFavorites(account_id, type, parent_id) {
+        console.log('type :', type);
+        console.log('parent_id :', parent_id);
+        return model.findOneAndUpdate({ account_id }, {
+            $push: {
+                favorites: { type, parent_id }
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param {String} account_id 
+     * @param {String} parent_id 
+     */
+    static removeFromFavorites(account_id, parent_id) {
+        return model.findOneAndUpdate({ account_id }, {
+            $pull: {
+                favorites: { parent_id }
+            }
+        })
+    }
 }
 
 module.exports = AccountDao

@@ -80,6 +80,24 @@ class PostsDao {
     static modify(conditions, modified_details) {
         return model.findOneAndUpdate(conditions, modified_details).lean().exec()
     }
+
+    /**
+     * @returns {Promise}
+     * @param {Date} date_created 
+     * @param {Number} limit 
+     */
+    static findWithLimitSortDate(date_created, limit) {
+        if (date_created) date_created = new Date(date_created);
+        else date_created = new Date();
+        if (limit) limit = parseInt(limit);
+        else limit = null;
+
+        return model.find({
+            date_created: {
+                $lt: date_created
+            }
+        }).sort({ 'date_created': -1 }).limit(limit).exec()
+    }
 }
 
 module.exports = PostsDao
