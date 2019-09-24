@@ -88,6 +88,7 @@ class CommentsDao {
 
     /**
      * @returns {Promise}
+     * @param {String} post_id
      * @param {Date} date_created 
      * @param {Number} limit 
      */
