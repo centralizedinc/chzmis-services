@@ -35,7 +35,7 @@ class AccountDao {
         return model.findOneAndUpdate({
             account_id: id
         }, {
-                status: 2
+                status: 1
             })
     }
 
