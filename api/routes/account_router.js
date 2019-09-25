@@ -17,6 +17,12 @@ var jwt = require('jsonwebtoken')
 
 /******* CONFIRM ACCOUNT *******/
 router.route("/confirmation")
+.get((req, res) =>{
+    AccountDao.findAll().then((result)=>{
+        console.log("find all account: " + result)
+        response_helper.sendGetResponse(req, res, result, null, 0)
+    })
+})
     .post((req, res) => {
         var account_id = req.body.id
         // if (req.headers && req.headers.access_token) {

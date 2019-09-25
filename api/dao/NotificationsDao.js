@@ -4,43 +4,43 @@ var router = require("express").Router();
 const sgMail = require("@sendgrid/mail");
 var ApplicationSettings = require("../utils/ApplicationSettings");
 
-
-sgMail.setApiKey(
-  ApplicationSettings.getValue("SENDGRID_API_KEY") || process.env.SENDGRID_API_KEY
-);
-sgMail.setSubstitutionWrappers("{{", "}}");
-
 var NotificationsModel = require("../models/NotificationsModel");
 
-class NotificationsDao{
-  
-  // Email Notification
-static emailNotifications(new_notifications, templateId) {
-  var notifications = new NotificationsModel(new_notifications);
-  console.log("notification: " + JSON.stringify(notifications))
-  // console.log("cb_notifications: " + JSON.stringify(cb_notifications))
-  console.log("templateId: " + JSON.stringify(templateId))
-  if (notifications.date_created) 
-   {
-    notifications.date_created = new Date();
-    return notifications.getSubstitutions(substitutions => {
-      console.log("substitutions :", substitutions);
-      var msg = {
-        to: notifications.email,
-        from: "chzmis@chz.com",
-        // from: ApplicationSettings.getValue("NOTIFICATION_SENDER_EMAIL"),
-        templateId: templateId,
-        substitutions: substitutions
-      };
-      console.log("send message: " + JSON.stringify(msg))
-      console.log('sgMail :', sgMail);
-      sgMail.send(msg).then((result) => {
-        console.log("email successfully sended: " + result)
-      })
-      
-    });
+class NotificationsDao {
+
+  static setKeys(){
+    sgMail.setApiKey(
+      ApplicationSettings.getValue("SENDGRID_API_KEY") || process.env.SENDGRID_API_KEY
+    );
+    sgMail.setSubstitutionWrappers("{{", "}}");
   }
-}
+
+  // Email Notification
+  static emailNotifications(new_notifications, templateId) {
+    var notifications = new NotificationsModel(new_notifications);
+    console.log("notification: " + JSON.stringify(notifications))
+    // console.log("cb_notifications: " + JSON.stringify(cb_notifications))
+    console.log("templateId: " + JSON.stringify(templateId))
+    if (notifications.date_created) {
+      notifications.date_created = new Date();
+      return notifications.getSubstitutions(substitutions => {
+        console.log("substitutions :", substitutions);
+        var msg = {
+          to: notifications.email,
+          from: "chzmis@chz.com",
+          // from: ApplicationSettings.getValue("NOTIFICATION_SENDER_EMAIL"),
+          templateId: templateId,
+          substitutions: substitutions
+        };
+        console.log("send message: " + JSON.stringify(msg))
+        console.log('sgMail :', sgMail);
+        sgMail.send(msg).then((result) => {
+          console.log("email successfully sended: " + result)
+        })
+
+      });
+    }
+  }
 
 }
 

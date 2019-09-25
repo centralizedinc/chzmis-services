@@ -15,6 +15,7 @@ class AccountDao {
      * @returns {Promise}
      */
     static findAll() {
+        console.log("find all accounts of members: " + model.find())
         return model.find({}).lean().exec()
     }
 
@@ -32,7 +33,7 @@ class AccountDao {
      */
     static findOneProfile(id) {
         return model.findOneAndUpdate({
-            id: id
+            account_id: id
         }, {
                 status: 2
             })
