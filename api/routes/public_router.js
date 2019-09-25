@@ -51,7 +51,10 @@ router
                 result.user = user
                 console.log('result :', result);
                 var mode = {
-                    email: result.account.email
+                    email: result.account.email,
+                    substitutions: {
+                        registration_url: `http://localhost:8080/#/confirmRegistration?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}`
+                    }
                 }
                 var template_id = ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE")
                 return NotificationDao.emailNotifications(mode, template_id)

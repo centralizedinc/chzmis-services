@@ -32,6 +32,9 @@ class AccountDao {
      * @param {Number} id 
      */
     static findOneProfile(id) {
+        var account = model.findOne(id).lean().exec()
+        console.log("find one profile account: " + account)
+        
         return model.findOneAndUpdate({
             account_id: id
         }, {
