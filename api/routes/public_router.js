@@ -5,8 +5,9 @@ const passport = require('passport');
 
 var UserDao = require('../dao/UserDao')
 var AccountDao = require('../dao/AccountDao')
-// var NotificationDao = require('../dao/NotificationsDao')
+var NotificationDao = require('../dao/NotificationsDao')
 
+var ApplicationSettings = require("../utils/ApplicationSettings");
 const ResponseHelper = require('../utils/response_helper');
 const response_helper = new ResponseHelper('AUTH')
 
@@ -49,8 +50,17 @@ router
             }).then((user) => {
                 result.user = user
                 console.log('result :', result);
+                var mode = {
+                    email: result.account.email
+                }
+                var template_id = ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE")
+                return NotificationDao.emailNotifications(mode, template_id)
+            }).then((notify) => {
+                console.log("notification data: " + notify)
                 response_helper.sendPostResponse(req, res, result, null, 0)
-            }).catch((err) => {
+            })
+            
+            .catch((err) => {
                 console.log("err data: " + JSON.stringify(err))
                 response_helper.sendPostResponse(req, res, null, err, 0)
             });

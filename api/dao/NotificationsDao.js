@@ -12,44 +12,18 @@ sgMail.setSubstitutionWrappers("{{", "}}");
 
 var NotificationsModel = require("../models/NotificationsModel");
 
-// Get Notifications
-function getNotifications(cb_notifications) {
-  NotificationsModel.find((err, notifications) => {
-    cb_notifications(err, notifications);
-  });
-}
-
-function getNotificationsByConditions(conditions, cb_notifications) {
-  NotificationsModel.find(conditions, (err, notifications) => {
-    cb_notifications(err, notifications);
-  });
-}
-
-function getNotificationsById(id, cb_notifications) {
-  notificationsModel.findById(id, (err, notifications) => {
-    cb_notifications(err, notifications);
-  });
-}
-
-// Add Notifications
-function addNotifications(new_notifications, cb_notifications) {
-  var notifications = new NotificationsModel(new_notifications);
-  notifications.date_created = new Date();
-
-  notifications.save(err => {
-    cb_notifications(err, notifications);
-  });
-}
-
-// Email Notification
-function emailNotifications(new_notifications, templateId, cb) {
+class NotificationsDao{
+  
+  // Email Notification
+static emailNotifications(new_notifications, templateId) {
   var notifications = new NotificationsModel(new_notifications);
   console.log("notification: " + JSON.stringify(notifications))
   // console.log("cb_notifications: " + JSON.stringify(cb_notifications))
   console.log("templateId: " + JSON.stringify(templateId))
-  if (notifications.date_created) notifications.date_created = new Date();
-  try {
-    notifications.getSubstitutions(substitutions => {
+  if (notifications.date_created) 
+   {
+    notifications.date_created = new Date();
+    return notifications.getSubstitutions(substitutions => {
       console.log("substitutions :", substitutions);
       var msg = {
         to: notifications.email,
@@ -62,46 +36,78 @@ function emailNotifications(new_notifications, templateId, cb) {
       console.log('sgMail :', sgMail);
       sgMail.send(msg).then((result) => {
         console.log("email successfully sended: " + result)
-        cb(null, result)
       })
       
     });
-  } catch (error) {
-    cb(error)
   }
 }
 
-// Modify Notifications
-function modifyNotifications(
-  conditions,
-  modified_notifications,
-  cb_notifications
-) {
-  NotificationsModel.findOneAndUpdate(
-    conditions,
-    modified_notifications,
-    (err, notifications) => {
-      cb_notifications(err, notifications);
-    }
-  );
 }
 
-function modifyNotificationsById(id, modified_notifications, cb_notifications) {
-  NotificationsModel.findByIdAndUpdate(
-    id,
-    modified_notifications,
-    (err, notifications) => {
-      cb_notifications(err, notifications);
-    }
-  );
-}
+module.exports = NotificationsDao
 
-module.exports = {
-  getNotifications,
-  getNotificationsByConditions,
-  getNotificationsById,
-  addNotifications,
-  emailNotifications,
-  modifyNotifications,
-  modifyNotificationsById
-};
+// // Get Notifications
+// function getNotifications(cb_notifications) {
+//   NotificationsModel.find((err, notifications) => {
+//     cb_notifications(err, notifications);
+//   });
+// }
+
+// function getNotificationsByConditions(conditions, cb_notifications) {
+//   NotificationsModel.find(conditions, (err, notifications) => {
+//     cb_notifications(err, notifications);
+//   });
+// }
+
+// function getNotificationsById(id, cb_notifications) {
+//   notificationsModel.findById(id, (err, notifications) => {
+//     cb_notifications(err, notifications);
+//   });
+// }
+
+// // Add Notifications
+// function addNotifications(new_notifications, cb_notifications) {
+//   var notifications = new NotificationsModel(new_notifications);
+//   notifications.date_created = new Date();
+
+//   notifications.save(err => {
+//     cb_notifications(err, notifications);
+//   });
+// }
+
+
+
+// // Modify Notifications
+// function modifyNotifications(
+//   conditions,
+//   modified_notifications,
+//   cb_notifications
+// ) {
+//   NotificationsModel.findOneAndUpdate(
+//     conditions,
+//     modified_notifications,
+//     (err, notifications) => {
+//       cb_notifications(err, notifications);
+//     }
+//   );
+// }
+
+// function modifyNotificationsById(id, modified_notifications, cb_notifications) {
+//   NotificationsModel.findByIdAndUpdate(
+//     id,
+//     modified_notifications,
+//     (err, notifications) => {
+//       cb_notifications(err, notifications);
+//     }
+//   );
+// }
+
+// module.exports = {
+//   getNotifications,
+//   getNotificationsByConditions,
+//   getNotificationsById,
+//   addNotifications,
+//   emailNotifications,
+//   modifyNotifications,
+//   modifyNotificationsById
+// };
