@@ -24,6 +24,7 @@ app.use('/users', passport.authenticate('jwt', { session: false }), require('./a
 app.use('/post', require('./api/routes/post_router'));
 app.use('/comments', require('./api/routes/comments_router'));
 app.use('/upload', require('./api/routes/upload_router'));
+app.use('/notification', require('./api/routes/notifications_router'))
 app.use('/', require('./api/routes/public_router'));
 
 

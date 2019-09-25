@@ -23,15 +23,17 @@ router
     .post((req, res) => {
         var data = req.body;
         console.log("signup data: " + JSON.stringify(data))
-        if (data) {
+        if (data != null) {
             var result = {}
+            console.log("singup have data:")
             AccountDao.create({
-                email: data.email,
-                method: data.method,
-                password: data.password,
+                email: data.account.email,
+                method: data.account.method,
+                password: data.account.password,
                 // google_id: data.google_id,
                 // facebook_id: data.facebook_id
             }).then((account) => {
+                console.log("account: "+ JSON.stringify(account))
                 result.account = account
                 const user = {
                     account_id: account.account_id,
@@ -52,8 +54,10 @@ router
                 console.log("err data: " + JSON.stringify(err))
                 response_helper.sendPostResponse(req, res, null, err, 0)
             });
-        } else response_helper.sendPostResponse(req, res, null, err, 0)
-    })
+        } else{
+             response_helper.sendPostResponse(req, res, null, err, 0)
+        }
+            })
 
 
 /***** SIGN UP USING GOOGLE ACCOUNT *****/

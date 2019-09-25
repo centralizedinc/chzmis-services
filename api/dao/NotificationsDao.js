@@ -60,8 +60,11 @@ function emailNotifications(new_notifications, templateId, cb) {
       };
       console.log("send message: " + JSON.stringify(msg))
       console.log('sgMail :', sgMail);
-      sgMail.send(msg)
-      cb(null, msg)
+      sgMail.send(msg).then((result) => {
+        console.log("email successfully sended: " + result)
+        cb(null, result)
+      })
+      
     });
   } catch (error) {
     cb(error)
