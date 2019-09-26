@@ -49,79 +49,117 @@ router.route("/confirmation")
             })
     })
 
-// router.route('/delete')
-//     // Delete Group
-//     .post((req, res) => {
-//         var user_session = null;
-//         if (req.headers && req.headers.access_token) {
-//             var token = req.headers.access_token;
-//             user_session = jwt.decode(token);
-//         }
-//         if (user_session && user_session.id) {
-//             GroupDao.findOneByIdAndUpdate(req.body.group_id, {
-//                     modified_by: user_session.id,
-//                     status: 0
-//                 })
-//                 .then((result) => {
-//                     response_helper.sendPostResponse(req, res, result, null, 0)
-//                 }).catch((err) => {
-//                     response_helper.sendPostResponse(req, res, null, err, 0)
-//                 });
-//         } else {
-//             response_helper.sendPostResponse(
-//                 req,
-//                 res,
-//                 null, {
-//                     local_errors: [{
-//                         message: "Invalid Token."
-//                     }]
-//                 },
-//                 0
-//             );
-//         }
-//     });
 
-// router
-//     .route('/:id')
-//     // Get Group By ID
-//     .get((req, res) => {
-//         GroupDao.findOneByID(req.params.id)
-//             .then((result) => {
-//                 response_helper.sendGetResponse(req, res, result, null, 1)
-//             }).catch((err) => {
-//                 response_helper.sendGetResponse(req, res, null, err, 1)
-//             });
-//     })
-//     // Update Group By ID
-//     .post((req, res) => {
-//         var user_session = null;
-//         if (req.headers && req.headers.access_token) {
-//             var token = req.headers.access_token;
-//             user_session = jwt.decode(token);
-//         }
-//         if (user_session && user_session.id) {
-//             var group = req.body;
-//             group.modified_by = user_session.id
-//             GroupDao.modifyByID(req.params.id, group)
-//                 .then((result) => {
-//                     response_helper.sendPostResponse(req, res, result, null, 1)
-//                 }).catch((err) => {
-//                     response_helper.sendPostResponse(req, res, null, err, 1)
-//                 });
-//         } else {
-//             response_helper.sendPostResponse(
-//                 req,
-//                 res,
-//                 null, {
-//                     local_errors: [{
-//                         message: "Invalid Token."
-//                     }]
-//                 },
-//                 1
-//             );
-//         }
+router.route("/password")
+    .post((req, res) => {
+        var new_password = req.body.passwod
+        var email = req.body.email
+        // if (req.headers && req.headers.access_token) {
+        //     var token = req.headers.access_token;
+        //     user_session = jwt.decode(token);
+        // }
 
-//     });
+        AccountDao.updatePasswordEmail(email, new_password)
+            .then((result) => {
+                console.log("AccountDao password: " + JSON.stringify(result))
+                response_helper.sendPostResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                console.log("AccountDao password: " + JSON.stringify(err))
+                response_helper.sendPostResponse(req, res, null, err, 0)
+            })
+    })
+
+router.route("/forgetpassword")
+    .post((req, res) => {
+        var email = req.body.id
+        // if (req.headers && req.headers.access_token) {
+        //     var token = req.headers.access_token;
+        //     user_session = jwt.decode(token);
+        // }
+
+        AccountDao.findOneByID(email)
+            .then((result) => {
+                console.log("AccountDao forgetpassword: " + JSON.stringify(result))
+                response_helper.sendPostResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                console.log("AccountDao forgetpassword: " + JSON.stringify(err))
+                response_helper.sendPostResponse(req, res, null, err, 0)
+            })
+    })
+
+router.route('/delete')
+    // Delete Group
+    .post((req, res) => {
+        var user_session = null;
+        if (req.headers && req.headers.access_token) {
+            var token = req.headers.access_token;
+            user_session = jwt.decode(token);
+        }
+        if (user_session && user_session.id) {
+            GroupDao.findOneByIdAndUpdate(req.body.group_id, {
+                    modified_by: user_session.id,
+                    status: 0
+                })
+                .then((result) => {
+                    response_helper.sendPostResponse(req, res, result, null, 0)
+                }).catch((err) => {
+                    response_helper.sendPostResponse(req, res, null, err, 0)
+                });
+        } else {
+            response_helper.sendPostResponse(
+                req,
+                res,
+                null, {
+                    local_errors: [{
+                        message: "Invalid Token."
+                    }]
+                },
+                0
+            );
+        }
+    });
+
+router
+    .route('/:id')
+    // Get Group By ID
+    .get((req, res) => {
+        GroupDao.findOneByID(req.params.id)
+            .then((result) => {
+                response_helper.sendGetResponse(req, res, result, null, 1)
+            }).catch((err) => {
+                response_helper.sendGetResponse(req, res, null, err, 1)
+            });
+    })
+    // Update Group By ID
+    .post((req, res) => {
+        var user_session = null;
+        if (req.headers && req.headers.access_token) {
+            var token = req.headers.access_token;
+            user_session = jwt.decode(token);
+        }
+        if (user_session && user_session.id) {
+            var group = req.body;
+            group.modified_by = user_session.id
+            GroupDao.modifyByID(req.params.id, group)
+                .then((result) => {
+                    response_helper.sendPostResponse(req, res, result, null, 1)
+                }).catch((err) => {
+                    response_helper.sendPostResponse(req, res, null, err, 1)
+                });
+        } else {
+            response_helper.sendPostResponse(
+                req,
+                res,
+                null, {
+                    local_errors: [{
+                        message: "Invalid Token."
+                    }]
+                },
+                1
+            );
+        }
+
+    });
 
 
 
