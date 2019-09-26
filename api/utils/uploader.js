@@ -81,7 +81,7 @@ class Uploader {
           });
         },
         key: function (req, file, cb) {
-          cb(null, directory);
+          cb(null, `${directory}/${Date.now().toString()}`);
         }
       })
     });
