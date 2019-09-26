@@ -15,6 +15,15 @@ var response_helper = new ResponseHelper('ACC')
 //Jwt
 var jwt = require('jsonwebtoken')
 
+router.route("/verify/email")
+.get((req, res) => {
+    var email = req.body.email
+    console.log("entering email: " + email)
+    AccountDao.findByEmail(email).then((result)=>{
+        console.log("find by email result: " + JSON.stringify(result))
+        response_helper.sendGetResponse(req, res, result, null, 1)
+    })
+})
 /******* CONFIRM ACCOUNT *******/
 router.route("/confirmation")
 .get((req, res) =>{

@@ -55,6 +55,7 @@ class AccountDao {
      * @param {String} email 
      */
     static findByEmail(email) {
+        console.log("find by email: " + email)
         return model.findOne({
             email
         }).exec()
