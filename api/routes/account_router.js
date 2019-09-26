@@ -34,6 +34,44 @@ router.route("/confirmation")
             })
     })
 
+
+router.route("/password")
+    .post((req, res) => {
+        var new_password = req.body.passwod
+        var email = req.body.email
+        // if (req.headers && req.headers.access_token) {
+        //     var token = req.headers.access_token;
+        //     user_session = jwt.decode(token);
+        // }
+
+        AccountDao.updatePasswordEmail(email, new_password)
+            .then((result) => {
+                console.log("AccountDao password: " + JSON.stringify(result))
+                response_helper.sendPostResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                console.log("AccountDao password: " + JSON.stringify(err))
+                response_helper.sendPostResponse(req, res, null, err, 0)
+            })
+    })
+
+router.route("/forgetpassword")
+    .post((req, res) => {
+        var email = req.body.id
+        // if (req.headers && req.headers.access_token) {
+        //     var token = req.headers.access_token;
+        //     user_session = jwt.decode(token);
+        // }
+
+        AccountDao.findOneByID(email)
+            .then((result) => {
+                console.log("AccountDao forgetpassword: " + JSON.stringify(result))
+                response_helper.sendPostResponse(req, res, result, null, 0)
+            }).catch((err) => {
+                console.log("AccountDao forgetpassword: " + JSON.stringify(err))
+                response_helper.sendPostResponse(req, res, null, err, 0)
+            })
+    })
+
 router.route('/delete')
     // Delete Group
     .post((req, res) => {
