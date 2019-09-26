@@ -47,6 +47,7 @@ var AccountModelSchema = new mongoose.Schema({
         /**
          * 0 - registered
          * 1 - confirmed 
+         * 2 - update profile
          */
     },
     google_id: {
