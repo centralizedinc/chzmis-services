@@ -89,9 +89,10 @@ router
 router
     .route('/:id')
     .post((req, res) => {
-        const { avatar, name, members, status, favorites, topics } = req.body;
-        ConnectionsDao.modifyByID(req.params.id, { avatar, name, members, status, favorites, topics })
+        console.log('req.headers.access_token :', jwt.decode(req.headers.access_token));
+        ConnectionsDao.modifyByID(req.params.id, req.body)
             .then((result) => {
+                console.log('result :', result);
                 response_helper.sendPostResponse(req, res, result, null, 3)
             }).catch((err) => {
                 response_helper.sendPostResponse(req, res, null, err, 3)

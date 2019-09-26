@@ -15,6 +15,7 @@ class AccountDao {
      * @returns {Promise}
      */
     static findAll() {
+        console.log("find all accounts of members: " + model.find())
         return model.find({}).lean().exec()
     }
 
@@ -31,10 +32,13 @@ class AccountDao {
      * @param {Number} id 
      */
     static findOneProfile(id) {
+        var account = model.findOne(id).lean().exec()
+        console.log("find one profile account: " + account)
+        
         return model.findOneAndUpdate({
-            id: id
+            account_id: id
         }, {
-                status: 2
+                status: 1
             })
     }
 
@@ -54,6 +58,14 @@ class AccountDao {
         return model.findOne({
             email
         }).exec()
+    }
+
+    /**
+     * @returns {Promise}
+     * @param {String} local_data
+    */ 
+    static createLocalAccount(local_data){
+        return (new model(local_data)).save()
     }
 
     /**
@@ -313,6 +325,35 @@ class AccountDao {
         }, {
                 session_token
             }).exec()
+    }
+
+    /**
+     * 
+     * @param {String} account_id 
+     * @param {Number} type 
+     * @param {String} parent_id 
+     */
+    static addToFavorites(account_id, type, parent_id) {
+        console.log('type :', type);
+        console.log('parent_id :', parent_id);
+        return model.findOneAndUpdate({ account_id }, {
+            $push: {
+                favorites: { type, parent_id }
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param {String} account_id 
+     * @param {String} parent_id 
+     */
+    static removeFromFavorites(account_id, parent_id) {
+        return model.findOneAndUpdate({ account_id }, {
+            $pull: {
+                favorites: { parent_id }
+            }
+        })
     }
 }
 

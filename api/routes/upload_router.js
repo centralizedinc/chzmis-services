@@ -48,7 +48,7 @@ router.route('/avatar/:account_id')
 
 router.route('/connection/:connection_id')
     .post((req, res) => {
-        const directory = `connection/${req.params.connection_id}/${Date.now().toString()}`
+        const directory = `connection/${req.params.connection_id}`
         const upload = Uploader.uploadDocuments(directory);
         upload(req, res, function (err, some) {
             response_helper.sendPostResponse(req, res, req.files, err, 2)
@@ -57,7 +57,7 @@ router.route('/connection/:connection_id')
 
 router.route('/connection/:connection_id/public')
     .post((req, res) => {
-        const directory = `connection/public/${req.params.connection_id}/${Date.now().toString()}`
+        const directory = `connection/public/${req.params.connection_id}`
         const upload = Uploader.uploadDocuments(directory);
         upload(req, res, function (err, some) {
             response_helper.sendPostResponse(req, res, req.files, err, 2)

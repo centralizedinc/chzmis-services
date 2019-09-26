@@ -47,6 +47,7 @@ var AccountModelSchema = new mongoose.Schema({
         /**
          * 0 - registered
          * 1 - confirmed 
+         * 2 - update profile
          */
     },
     google_id: {
@@ -86,6 +87,7 @@ AccountModelSchema.pre('save', async function (callback) {
 });
 
 AccountModelSchema.pre('findOneAndUpdate', function (callback) {
+    console.log('this :', this._update);
     this.options.new = true;
     this.options.runValidators = true;
     this._update.date_modified = new Date();

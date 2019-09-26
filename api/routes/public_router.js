@@ -5,8 +5,9 @@ const passport = require('passport');
 
 var UserDao = require('../dao/UserDao')
 var AccountDao = require('../dao/AccountDao')
-// var NotificationDao = require('../dao/NotificationsDao')
+var NotificationDao = require('../dao/NotificationsDao')
 
+var ApplicationSettings = require("../utils/ApplicationSettings");
 const ResponseHelper = require('../utils/response_helper');
 const response_helper = new ResponseHelper('AUTH')
 
@@ -23,37 +24,53 @@ router
     .post((req, res) => {
         var data = req.body;
         console.log("signup data: " + JSON.stringify(data))
-        if (data) {
+        if (data != null) {
             var result = {}
+            console.log("singup have data:")
             AccountDao.create({
-                email: data.email,
-                method: data.method,
-                password: data.password,
+                email: data.account.email,
+                method: data.account.method,
+                password: data.account.password,
                 // google_id: data.google_id,
                 // facebook_id: data.facebook_id
             }).then((account) => {
+                console.log("account: "+ JSON.stringify(account))
                 result.account = account
                 const user = {
                     account_id: account.account_id,
-                    avatar: data.avatar,
+                    // avatar: data.avatar,
                     name: data.name,
-                    address: data.address,
-                    phone: data.phone,
+                    // address: data.address,
+                    // phone: data.phone,
                     email: data.email,
-                    birthdate: data.birthdate
+                    // birthdate: data.birthdate
                 }
                 console.log('account :', account);
                 return UserDao.create(user)
             }).then((user) => {
                 result.user = user
                 console.log('result :', result);
+                var mode = {
+                    email: result.account.email,
+                    substitutions: {
+                        registration_url: `http://localhost:8080/#/confirmRegistration?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}`
+                    }
+                }
+                var template_id = ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE")
+                return NotificationDao.emailNotifications(mode, template_id)
+            }).then((notify) => {
+                console.log("notification data: " + notify)
                 response_helper.sendPostResponse(req, res, result, null, 0)
-            }).catch((err) => {
+            })
+            
+            .catch((err) => {
                 console.log("err data: " + JSON.stringify(err))
                 response_helper.sendPostResponse(req, res, null, err, 0)
             });
-        } else response_helper.sendPostResponse(req, res, null, err, 0)
-    })
+        } else{
+             response_helper.sendPostResponse(req, res, null, err, 0)
+        }
+            })
 
 
 /***** SIGN UP USING GOOGLE ACCOUNT *****/

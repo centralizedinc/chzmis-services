@@ -4,7 +4,7 @@ mongoose.Promise = require('bluebird')
 var SettingsDao = require('../dao/SettingsDao');
 var ApplicationSettings = require('./ApplicationSettings');
 const uploader = require("./uploader");
-
+const NotificationDao = require('../dao/NotificationsDao');
 function connect(app) {
     mongoose.connect(process.env.MONGODB_URI || require('./constant_helper').mongodb_uri, {
             promiseLibrary: require('bluebird'),
@@ -25,8 +25,8 @@ function connect(app) {
             require('../auth/google')
             require('../auth/facebook')
             uploader.setKeys();
-
-            app.use('/notification', require('../routes/notifications_router'));
+            NotificationDao.setKeys();
+            // app.use('/notification', require('../routes/notifications_router'));
         }).catch((err) => console.error(err));
 }
 
