@@ -34,7 +34,7 @@ class AccountDao {
     static findOneProfile(id) {
         var account = model.findOne(id).lean().exec()
         console.log("find one profile account: " + account)
-        
+
         return model.findOneAndUpdate({
             account_id: id
         }, {
@@ -63,8 +63,8 @@ class AccountDao {
     /**
      * @returns {Promise}
      * @param {String} local_data
-    */ 
-    static createLocalAccount(local_data){
+    */
+    static createLocalAccount(local_data) {
         return (new model(local_data)).save()
     }
 
@@ -134,14 +134,14 @@ class AccountDao {
                     console.log('modified_account :', modified_account);
                     account = modified_account
                     auth.account = modified_account;
-                    if(creation_mode)  return UserDao.create({
-                        account_id:auth.account.account_id,
-                        avatar: profile.photos[0].value ,
+                    if (creation_mode) return UserDao.create({
+                        account_id: auth.account.account_id,
+                        avatar: profile.photos[0].value,
                         name: {
                             first: profile.name.givenName,
                             last: profile.name.familyName
                         },
-                        email:profile.emails[0].value
+                        email: profile.emails[0].value
                     })
                     else return UserDao.findOne({ account_id: modified_account.account_id });
 
@@ -353,6 +353,42 @@ class AccountDao {
             $pull: {
                 favorites: { parent_id }
             }
+        })
+    }
+
+    /**
+     * @returns {Promise}
+     * @param {String} account_id 
+     * @param {Number} type 
+     * @param {String} parent_id 
+     */
+    static saveLastUpdate(account_id, type, parent_id) {
+        return new Promise((resolve, reject) => {
+            var updated_account = null;
+            model.findOneAndUpdate({ account_id, "notifications.parent_id": parent_id }, {
+                $set: {
+                    "notifications.$.last_update": new Date()
+                }
+            })
+                .then((result) => {
+                    if (!result) {
+                        return model.findOneAndUpdate({ account_id }, {
+                            $push: {
+                                notifications: {
+                                    parent_id,
+                                    type,
+                                    last_update: new Date()
+                                }
+                            }
+                        })
+                    } else updated_account = result;
+                })
+                .then((result) => {
+                    console.log('updated_account :', updated_account);
+                    console.log('result :', result);
+                    resolve(updated_account || result);
+                })
+                .catch((err) => reject(err));
         })
     }
 }

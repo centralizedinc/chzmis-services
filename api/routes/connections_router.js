@@ -4,12 +4,13 @@ var router = require("express").Router();
 const jwt = require('jsonwebtoken')
 
 // DAO
-var ConnectionsDao = require('../dao/ConnectionsDao');
+const ConnectionsDao = require('../dao/ConnectionsDao');
+const PostsDao = require('../dao/PostsDao');
 
 // Utils
-var ResponseHelper = require("../utils/response_helper");
+const ResponseHelper = require("../utils/response_helper");
 
-var response_helper = new ResponseHelper('CONNECTIONS')
+const response_helper = new ResponseHelper('CONNECTIONS')
 
 
 router

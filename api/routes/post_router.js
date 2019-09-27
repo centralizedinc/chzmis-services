@@ -1,16 +1,17 @@
 "use strict";
 
-var router = require("express").Router();
+const router = require("express").Router();
 
 const jwt = require('jsonwebtoken');
 
 // DAO
-var PostsDao = require('../dao/PostsDao');
+const PostsDao = require('../dao/PostsDao');
+const AccountDao = require('../dao/AccountDao');
 
 // Utils
-var ResponseHelper = require("../utils/response_helper");
+const ResponseHelper = require("../utils/response_helper");
 
-var response_helper = new ResponseHelper('POSTS')
+const response_helper = new ResponseHelper('POSTS')
 
 
 router
@@ -26,7 +27,6 @@ router
     .post((req, res) => {
         var post = req.body;
         post.author = jwt.decode(req.headers.access_token).account_id;
-        console.log('post :', post);
         PostsDao.create(post)
             .then((result) => {
                 response_helper.sendPostResponse(req, res, result, null, 0)
@@ -38,7 +38,8 @@ router
 router
     .route('/public')
     .get((req, res) => {
-        PostsDao.findPublicWithLimitSortDateByParentId(req.query.date, req.query.limit)
+        console.log('req.query :', req.query);
+        PostsDao.findPublicWithLimitSortDateByParentId(req.query.last_date, req.query.limit)
             .then((result) => {
                 response_helper.sendGetResponse(req, res, result, null, 1)
             }).catch((err) => {
@@ -49,7 +50,12 @@ router
 router
     .route('/parent/:parent_id')
     .get((req, res) => {
-        PostsDao.findWithLimitSortDateByParentId(req.params.parent_id, req.query.date, req.query.limit)
+        console.log('req.query :', req.query);
+        // For saving last update in notification
+        const account_id = jwt.decode(req.headers.access_token).account_id;
+        if (req.query.refresh) AccountDao.saveLastUpdate(account_id, req.query.type, req.params.parent_id);
+        // Get posts
+        PostsDao.findWithLimitSortDateByParentId(req.params.parent_id, req.query.last_date, req.query.limit)
             .then((result) => {
                 response_helper.sendGetResponse(req, res, result, null, 1)
             }).catch((err) => {

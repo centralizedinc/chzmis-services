@@ -24,6 +24,18 @@ var AccountModelSchema = new mongoose.Schema({
         type: String,
         // required: [true, 'Password is a required field']
     },
+    notifications: [{
+        type: {
+            type: Number
+            // 0 - Connection, 1 - Channel
+        },
+        parent_id: {
+            type: String
+        },
+        last_update: {
+            type: Date
+        }
+    }],
     favorites: [{
         type: {
             type: Number
@@ -87,9 +99,12 @@ AccountModelSchema.pre('save', async function (callback) {
 });
 
 AccountModelSchema.pre('findOneAndUpdate', function (callback) {
-    console.log('this :', this._update);
-    this.options.new = true;
-    this.options.runValidators = true;
+    console.log('Update Values :', this._update);
+    // console.log('this_&_ :', this);
+    if (this.options && Object.keys(this.options).length) {
+        this.options.new = true;
+        this.options.runValidators = true;
+    }
     this._update.date_modified = new Date();
     callback();
 });

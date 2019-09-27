@@ -55,6 +55,7 @@ passport.use('login', new LocalStrategy({
             else {
                 const token = jwt.sign({
                     account_id: result.account.account_id,
+                    notifications: result.account.notifications,
                     email: email,
                     date: new Date()
                 }, ApplicationSettings.getValue("JWT_SECRET_TOKEN"));

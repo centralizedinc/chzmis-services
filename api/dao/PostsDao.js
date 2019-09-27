@@ -137,6 +137,18 @@ class PostsDao {
             }
         }).sort({ 'date_created': -1 }).limit(limit).exec()
     }
+
+    /**
+     * @returns {Promise}
+     * @param {Array<String>} parents 
+     */
+    static findByParents(parents) {
+        return model.find({
+            parent_id: {
+                $in: parents
+            }
+        }).select('_id parent_id').lean().exec()
+    }
 }
 
 module.exports = PostsDao
