@@ -52,21 +52,29 @@ router.route("/confirmation")
 
 router.route("/password")
     .post((req, res) => {
-        var new_password = req.body.passwod
-        var email = req.body.email
+        console.log("password req.body: " + JSON.stringify(req.body))
+        var id = req.body.id
+        var password = req.body.password
         // if (req.headers && req.headers.access_token) {
         //     var token = req.headers.access_token;
         //     user_session = jwt.decode(token);
         // }
-
-        AccountDao.updatePasswordEmail(email, new_password)
-            .then((result) => {
-                console.log("AccountDao password: " + JSON.stringify(result))
-                response_helper.sendPostResponse(req, res, result, null, 0)
-            }).catch((err) => {
-                console.log("AccountDao password: " + JSON.stringify(err))
-                response_helper.sendPostResponse(req, res, null, err, 0)
-            })
+            
+        AccountDao.checkPassword(id, password)
+    .then((result)=>{
+        console.log("check passsword: " + JSON.stringify(result))
+        response_helper.sendPostResponse(req, res, result, null, 0)
+    }).catch((err) => {
+        response_helper.sendPostResponse(req, res, null, err, 0)
+    })
+        // AccountDao.updatePasswordEmail(email, new_password)
+        //     .then((result) => {
+        //         console.log("AccountDao password: " + JSON.stringify(result))
+        //         response_helper.sendPostResponse(req, res, result, null, 0)
+        //     }).catch((err) => {
+        //         console.log("AccountDao password: " + JSON.stringify(err))
+        //         response_helper.sendPostResponse(req, res, null, err, 0)
+        //     })
     })
 
 router.route("/forgetpassword")

@@ -9,6 +9,7 @@ const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const constant_helper = require('../utils/constant_helper');
 
+
 class AccountDao {
 
     /**
@@ -283,6 +284,7 @@ class AccountDao {
         return new Date().getTime().toString() + auto_id.toString()
     }
 
+
     /**
      * @returns {Promise}
      * @param {String} id 
@@ -291,6 +293,42 @@ class AccountDao {
     static modifyById(id, updated_account) {
         return model.findByIdAndUpdate(id, updated_account).exec()
     }
+
+    static checkPassword(id, password) {
+        var profile = {}
+        var passwordIsMatch = null
+        console.log("check passsword id: " + JSON.stringify(id))
+        console.log("check password password: " + password.current_password)
+        model.findOne({account_id: id}, (err, account) => {
+            profile = account
+            console.log("find by id account:" + account)
+            console.log("find by id err: " + err)
+          if (err) 
+          {
+              console.log("error not find account")
+              return err;}
+          else{
+            // account.isValidPassword(old_password, (err, isMatch) => {
+            //     console.log("verify password isMatch: " + isMatch)
+            //     console.log("verify password err: " + err)
+            //     return isMatch
+            // });
+            // $2a$05$LxnaG7FhVqK2JdIg6zeDJegdCsLLaMfUYUzMKxrmeOkgDx.tcmuoe
+            bcrypt.compare(password.current_password, profile.password, (err, isValid) =>{
+                if(isValid){
+                    console.log("password is check: " + isValid)
+                    return model.findOneAndUpdate({account_id: id}, {password: password.confirm_password}).exec()
+                }else{
+                    console.log("error not same old password")
+                    return err
+                }
+            })
+          }
+          
+          
+          
+        });
+      }
 
     /**
      * @returns {Promise}
