@@ -53,13 +53,16 @@ router
                 var mode = {
                     email: result.account.email,
                     substitutions: {
-                        registration_url: `http://localhost:8080/#/confirmRegistration?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}`
+                        registration_url: `http://localhost:8080/#/confirmRegistration`
+                        // ?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}
                     }
                 }
                 var template_id = ApplicationSettings.getValue("REGISTRATION_EMAIL_TEMPLATE")
+                result.mode = mode
                 return NotificationDao.emailNotifications(mode, template_id)
             }).then((notify) => {
                 console.log("notification data: " + notify)
+                console.log("result data: " + result)
                 response_helper.sendPostResponse(req, res, result, null, 0)
             })
             
@@ -72,6 +75,24 @@ router
         }
             })
 
+            /******** FORGET PASSWORD ********/
+            router.route('/forgetPassword')
+            .get((req,res)=>{
+                var result = req.body
+                console.log("forget password req body: " + JSON.stringify(result))
+                var mode = {
+                    email: result.email,
+                    substitutions: {
+                        // registration_url: `http://localhost:8080/#/confirmRegistration`
+                        // ?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}
+                    }
+                }
+                var template_id = ApplicationSettings.getValue("FORGET_PASSWORD_TEMPLATE")
+                
+                NotificationDao.emailNotifications(mode, template_id).then((result)=>{
+                    console.log("notification forget password: " + JSON.stringify(result))
+                })
+            })
 
 /***** SIGN UP USING GOOGLE ACCOUNT *****/
 router.route('/auth/google')

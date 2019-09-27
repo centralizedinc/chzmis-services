@@ -106,14 +106,22 @@ AccountModelSchema.pre('findOneAndUpdate', function (callback) {
         this.options.runValidators = true;
     }
     this._update.date_modified = new Date();
+    // const salt = bcrypt.genSaltSync(5);
+    // account.password = bcrypt.hashSync(this._update.password, salt)
     callback();
 });
 
 AccountModelSchema.methods.isValidPassword = function (password) {
     return new Promise((resolve, reject) => {
+        console.log("passowrd: " + password)
+        console.log("this passowrd: " + this.password)
         bcrypt.compare(password, this.password, (err, isValid) => {
-            if (!err) resolve(isValid)
-            else reject(err)
+            if (!err){
+            console.log("is valid: " + isValid)
+             resolve(isValid)
+            } else {
+                console.log("error: " + err)
+                reject(err)}
         });
     })
 }
