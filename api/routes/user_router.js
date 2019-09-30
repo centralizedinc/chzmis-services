@@ -100,51 +100,25 @@ router.route('/details')
             });
     })
 
-    router
-    .route("/:id")
+router.route('/:id')
     .get((req, res) => {
-        UserDao.getAccountById(req.params.id, (err, account_id) => {
-            response_helper.sendGetResponse(
-                req,
-                res,
-                account_id,
-                err,
-                response_helper.ACCOUNT,
-                3
-            );
-        });
+        UserDao.findOneByID(req.params.id)
+            .then((result) => {
+                response_helper.sendGetResponse(req, res, result, null, 2)
+            }).catch((err) => {
+                response_helper.sendGetResponse(req, res, null, err, 2)
+            });
     })
     .post((req, res) => {
-        var user_session = null;
-        if (req.headers && req.headers.access_token) {
-            var token = req.headers.access_token;
-            user_session = jwt.decode(token);
-        }
-        if (user_session && user_session.id) {
-            var data = req.body;
-            data.modified_by = user_session.id;
-            UserDao.modifyAccountById(req.params.id, req.body, (err, account_id) => {
-                response_helper.sendPostResponse(
-                    req,
-                    res,
-                    account_id,
-                    err,
-                    response_helper.ACCOUNT,
-                    3
-                );
+        UserDao.find({
+            account_id: {
+                $in: req.body.accounts
+            }
+        })
+            .then((result) => {
+                response_helper.sendPostResponse(req, res, result, null, 2)
+            }).catch((err) => {
+                response_helper.sendPostResponse(req, res, null, err, 2)
             });
-        } else {
-            response_helper.sendPostResponse(
-                req,
-                res,
-                null, {
-                    local_errors: [{
-                        message: "Invalid Token."
-                    }]
-                },
-                response_helper.CASE,
-                0
-            );
-        }
-    });
+    })
 module.exports = router
