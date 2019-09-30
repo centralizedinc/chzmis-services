@@ -317,7 +317,10 @@ class AccountDao {
             bcrypt.compare(password.current_password, profile.password, (err, isValid) =>{
                 if(isValid){
                     console.log("password is check: " + isValid)
-                    return model.findOneAndUpdate({account_id: id}, {password: password.confirm_password}).exec()
+                    const salt = bcrypt.genSaltSync(5);
+                    const hash = bcrypt.hashSync(password.confirm_password, salt)
+                    var new_password = hash;
+                    return model.findOneAndUpdate({account_id: id}, {password: new_password}).exec()
                 }else{
                     console.log("error not same old password")
                     return err

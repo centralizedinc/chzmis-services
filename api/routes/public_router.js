@@ -82,7 +82,7 @@ router
                 console.log("forget password req body: " + JSON.stringify(result))
                 var mode = {
                     email: result.email,
-                    substitutions: {
+                    substitutions: { 
                         // registration_url: `http://localhost:8080/#/confirmRegistration`
                         // ?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}
                     }

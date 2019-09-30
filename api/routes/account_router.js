@@ -7,10 +7,11 @@ var GroupDao = require('../dao/GroupDao');
 var ChannelDao = require('../dao/ChannelsDao');
 var ConnectionDao = require('../dao/ConnectionsDao');
 var AccountDao = require('../dao/AccountDao');
+var NotificationDao = require('../dao/NotificationsDao')
 
 // Utils
 var ResponseHelper = require("../utils/response_helper");
-
+var ApplicationSettings = require("../utils/ApplicationSettings");
 var response_helper = new ResponseHelper('ACC')
 //Jwt
 var jwt = require('jsonwebtoken')
@@ -79,20 +80,45 @@ router.route("/password")
 
 router.route("/forgetpassword")
     .post((req, res) => {
-        var email = req.body.id
+        console.log("forget password req.body: " + JSON.stringify(req.body))
+        var email = req.body.email
         // if (req.headers && req.headers.access_token) {
         //     var token = req.headers.access_token;
         //     user_session = jwt.decode(token);
         // }
 
-        AccountDao.findOneByID(email)
+        AccountDao.findOne({email: email})
             .then((result) => {
-                console.log("AccountDao forgetpassword: " + JSON.stringify(result))
-                response_helper.sendPostResponse(req, res, result, null, 0)
-            }).catch((err) => {
+                console.log("find one email by : " + JSON.stringify(result))
+                var mode = {
+                    email: email,
+                    substitutions: { 
+                        registration_url: `http://localhost:8080/#/new_password/?account_id=${new Buffer(JSON.stringify({account_id: result.account_id})).toString('base64')}`
+                        // ?code=${new Buffer(JSON.stringify({account_id: result.account.account_id})).toString('base64')}
+                    }
+                }
+                var template_id = ApplicationSettings.getValue("FORGET_PASSWORD_TEMPLATE")
+                
+               return NotificationDao.emailNotifications(mode, template_id)
+            })
+            .then((notify)=>{
+                console.log("notification forget password: " + JSON.stringify(notify))
+                response_helper.sendPostResponse(req, res, notify, null, 0)
+            })
+            .catch((err) => {
                 console.log("AccountDao forgetpassword: " + JSON.stringify(err))
                 response_helper.sendPostResponse(req, res, null, err, 0)
             })
+    })
+
+    router.route('/new_password/:account_id')
+    .post((req,res) => {
+        var password = req.body
+        AccountDao.checkPassword(req.params.account_id, password).then((result) => {
+            response_helper.sendGetResponse(req, res, result, null, 0)
+        }).catch((err) => {
+            response_helper.sendGetResponse(req, res, null, err, 0)
+        })
     })
 
 router.route('/delete')
